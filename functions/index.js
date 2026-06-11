@@ -44,6 +44,22 @@ exports.notifyHackStealing = onValueUpdated(
   }
 );
 
+// Fires when a player's lastBonusTime updates — means they just got their hourly bonus
+exports.notifyHourlyBonus = onValueUpdated(
+  { ref: "/players/{playerId}/lastBonusTime", region: "asia-southeast1" },
+  async (event) => {
+    const playerId = event.params.playerId;
+    const token = await getTargetToken(playerId);
+    if (!token) return;
+
+    await sendPush(
+      token,
+      "💰 CREDITS REPLENISHED",
+      "+1000 credits have been added to your account. Login to spend them!"
+    );
+  }
+);
+
 async function getTargetToken(playerId) {
   const snap = await getDatabase().ref(`players/${playerId}/fcmToken`).get();
   return snap.exists() ? snap.val() : null;
