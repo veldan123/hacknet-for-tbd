@@ -1109,7 +1109,7 @@ async function requestNotifPermission() {
 async function registerFCMToken() {
   if (!messaging || VAPID_KEY.startsWith('REPLACE')) return;
   try {
-    const reg = await navigator.serviceWorker.register('/hacknet/firebase-messaging-sw.js');
+    const reg = await navigator.serviceWorker.register('/hacknet-for-tbd/firebase-messaging-sw.js');
     const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
     if (token) {
       await update(ref(db, `players/${currentPlayer.id}`), { fcmToken: token });
