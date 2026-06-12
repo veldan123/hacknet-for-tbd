@@ -306,7 +306,7 @@
       <button class="btn btn-info btn-full" onclick="goToChangePassword()">🔑 CHANGE PASSWORD</button>
       <button class="btn btn-full" style="border-color:#ff8c00;color:#ff8c00;" onclick="openShop()">🛒 SHOP<br><span style="font-size:.7em;opacity:.7">UPGRADES</span></button>
       <button class="btn btn-full" onclick="showScreen('change-pin')">🔐 CHANGE PIN</button>
-      <button class="btn btn-full" style="border-color:#e91e63;color:#e91e63;grid-column:1/-1;" onclick="openWheel()">🎡 WHEEL OF FORTUNE<br><span style="font-size:.7em;opacity:.7">500 CR · MAX 50/DAY</span></button>
+      <button class="btn btn-full" style="border-color:#e91e63;color:#e91e63;grid-column:1/-1;" onclick="openWheel()">🎡 WHEEL OF FORTUNE<br><span style="font-size:.7em;opacity:.7">1000 CR · MAX 50/DAY</span></button>
       <div class="chat-btn-wrap" style="grid-column:1/-1;">
         <button class="btn btn-full" style="border-color:var(--y);color:var(--y);" onclick="showScreen('chat')">💬 GROUP CHAT</button>
         <div class="chat-unread" id="chat-unread" style="display:none;">0</div>
@@ -528,14 +528,14 @@
 <div id="overlay-wheel" class="">
   <div class="wheel-box">
     <div class="wheel-title">🎡 WHEEL OF FORTUNE</div>
-    <div class="wheel-subtitle">500 CR per spin · Max 50/day</div>
+    <div class="wheel-subtitle">1000 CR per spin · Max 50/day</div>
     <div class="wheel-wrap">
       <div class="wheel-ptr"></div>
       <canvas id="wheel-canvas" width="270" height="270"></canvas>
     </div>
     <div id="wheel-result"></div>
     <div id="wheel-spins-left"></div>
-    <button class="btn btn-warn btn-lg btn-full" id="spin-btn" onclick="spinWheel()">🎡 SPIN (500 CR)</button>
+    <button class="btn btn-warn btn-lg btn-full" id="spin-btn" onclick="spinWheel()">🎡 SPIN (1000 CR)</button>
     <button class="btn btn-sm btn-full" style="margin-top:8px;opacity:.55;" onclick="closeWheel()">CLOSE</button>
   </div>
 </div>
@@ -2026,11 +2026,11 @@ window.showToast = showToast;
 // =====================================================================
 // WHEEL OF FORTUNE
 // =====================================================================
-const WHEEL_PRIZES = [100, 300, 500, 800, 1000, 2000, 3000, 5000];
-const WHEEL_COLORS = ['#c0392b','#d35400','#f39c12','#27ae60','#16a085','#2471a3','#6c3483','#b03a2e'];
-const SPIN_COST    = 500;
+const WHEEL_PRIZES = [100, -100, 500, -300, 1000, -400, 3000, 0, 5000, 300, 2000, 800];
+const WHEEL_COLORS = ['#27ae60','#922b21','#f39c12','#c0392b','#2471a3','#7b241c','#6c3483','#555555','#b7950b','#1a7a4a','#16a085','#117864'];
+const SPIN_COST    = 1000;
 const MAX_SPINS    = 50;
-const SEG_DEG      = 360 / WHEEL_PRIZES.length; // 45°
+const SEG_DEG      = 360 / WHEEL_PRIZES.length;
 
 let wheelAngle    = 0;
 let wheelSpinning = false;
@@ -2068,9 +2068,10 @@ function drawWheelCanvas() {
     ctx.font = 'bold 11px "Orbitron",monospace';
     ctx.shadowColor = 'rgba(0,0,0,.9)';
     ctx.shadowBlur = 4;
-    const label = WHEEL_PRIZES[i] >= 1000
-      ? `${WHEEL_PRIZES[i] / 1000}K CR`
-      : `${WHEEL_PRIZES[i]} CR`;
+    const p = WHEEL_PRIZES[i];
+    const label = p === 0 ? '0 CR' : Math.abs(p) >= 1000
+      ? `${p < 0 ? '-' : ''}${Math.abs(p)/1000}K CR`
+      : `${p > 0 ? '+' : ''}${p} CR`;
     ctx.fillText(label, r - 9, 4);
     ctx.restore();
   }
@@ -2167,9 +2168,15 @@ async function spinWheel() {
     await runTransaction(ref(db, `players/${currentPlayer.id}/balance`), bal => (bal || 0) + prize);
 
     const resultEl = document.getElementById('wheel-result');
-    resultEl.innerHTML = `🎉 +${prize.toLocaleString()} CR!`;
+    const isLoss = prize < 0, isZero = prize === 0;
+    resultEl.innerHTML = isZero
+      ? `😐 NOTHING. Better luck next time.`
+      : isLoss
+        ? `💸 ${Math.abs(prize).toLocaleString()} CR LOST`
+        : `🎉 +${prize.toLocaleString()} CR!`;
+    resultEl.style.color = isLoss ? 'var(--r)' : isZero ? 'var(--dim)' : 'var(--g)';
     resultEl.style.display = 'block';
-    showToast(`🎡 You won ${prize.toLocaleString()} CR!`, 'ok', 4000);
+    showToast(isZero ? `😐 Nothing this time.` : isLoss ? `💸 Lost ${Math.abs(prize).toLocaleString()} CR!` : `🎡 Won ${prize.toLocaleString()} CR!`, isLoss || isZero ? 'warn' : 'ok', 4000);
 
     wheelSpinning = false;
     btn.disabled  = false;
