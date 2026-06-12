@@ -690,18 +690,22 @@ async function checkHourlyBonus() {
 
 function startBonusCountdown() {
   if (bonusTimerInterval) clearInterval(bonusTimerInterval);
+  let lastBonusTimeCache = null;
+
   const tick = async () => {
     try {
-      const snap = await get(ref(db, `players/${currentPlayer.id}/lastBonusTime`));
-      if (!snap.exists()) return;
-      const remaining = (snap.val() + HOURLY_MS) - Date.now();
+      if (lastBonusTimeCache === null) {
+        const snap = await get(ref(db, `players/${currentPlayer.id}/lastBonusTime`));
+        if (!snap.exists()) return;
+        lastBonusTimeCache = snap.val();
+      }
+      const remaining = (lastBonusTimeCache + HOURLY_MS) - Date.now();
       if (remaining <= 0) {
-        const bSnap = await get(ref(db, `players/${currentPlayer.id}/balance`));
-        await update(ref(db, `players/${currentPlayer.id}`), {
-          balance: (bSnap.exists() ? bSnap.val() : 0) + HOURLY_BONUS,
-          lastBonusTime: Date.now(),
-        });
-        showToast(`+${HOURLY_BONUS} CR — Hourly bonus!`, 'ok', 4000);
+        clearInterval(bonusTimerInterval);
+        bonusTimerInterval = null;
+        lastBonusTimeCache = null;
+        await checkHourlyBonus();
+        startBonusCountdown(); // restart after awarding
         return;
       }
       const m = Math.floor(remaining / 60000);
