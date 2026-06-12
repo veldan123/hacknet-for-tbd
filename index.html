@@ -276,10 +276,18 @@
       </div>
       <div class="bonus-bar"><div class="bonus-fill" id="bonus-fill" style="width:100%"></div></div>
     </div>
+    <div class="panel" id="immunity-panel" style="display:none;border-color:var(--b);">
+      <div class="panel-title" style="color:var(--b);">🛡 IMMUNITY ACTIVE</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <span class="info-text" style="font-size:.9em;">You cannot be hacked right now</span>
+        <span id="immunity-timer" style="font-family:'Orbitron',sans-serif;font-size:1.3em;color:var(--b);text-shadow:0 0 10px var(--b);">00:00</span>
+      </div>
+    </div>
     <div class="action-grid">
       <button class="btn btn-danger btn-full" onclick="showScreen('hack-select')">⚡ HACK FRIEND<br><span style="font-size:.7em;opacity:.7">COSTS 1000cr</span></button>
       <button class="btn btn-info btn-full" onclick="goToChangePassword()">🔑 CHANGE PASSWORD</button>
-      <button class="btn btn-full" onclick="showScreen('change-pin')" style="grid-column:1/-1;">🔐 CHANGE PIN</button>
+      <button class="btn btn-full" style="border-color:#ff8c00;color:#ff8c00;" onclick="openShop()">🛒 SHOP<br><span style="font-size:.7em;opacity:.7">UPGRADES</span></button>
+      <button class="btn btn-full" onclick="showScreen('change-pin')">🔐 CHANGE PIN</button>
       <div class="chat-btn-wrap" style="grid-column:1/-1;">
         <button class="btn btn-full" style="border-color:var(--y);color:var(--y);" onclick="showScreen('chat')">💬 GROUP CHAT</button>
         <div class="chat-unread" id="chat-unread" style="display:none;">0</div>
@@ -305,21 +313,10 @@
           </div>
           <div class="steal-time" id="steal-time-display"></div>
         </div>
+        <button class="btn btn-sm" style="margin-top:10px;opacity:.6;" onclick="cancelAccessing()">CANCEL</button>
       </div>
     </div>
-    <div class="panel active-hack-panel" id="active-hack-panel">
-      <div class="panel-title">HACK IN PROGRESS</div>
-      <div class="hack-status-row">
-        <span id="hack-target-label" class="info-text">—</span>
-        <span class="hack-amount" id="hack-amount-label">—</span>
-      </div>
-      <div class="hack-timer" id="hack-timer-display">00:00</div>
-      <div class="hack-progress-bar">
-        <div class="hack-progress-fill" id="hack-progress-fill"></div>
-      </div>
-      <div style="font-size:.75em;color:var(--g2);margin-bottom:12px;" id="hack-status-text">Processing transfer...</div>
-      <button class="btn btn-sm" onclick="abortHack()">ABORT HACK</button>
-    </div>
+    <div id="active-hacks-container"></div>
     <hr class="divider">
     <button class="btn btn-sm" style="opacity:.5;" onclick="logout()">DISCONNECT</button>
   </div>
@@ -423,6 +420,67 @@
   </div>
 </div>
 
+<!-- ===== SHOP ===== -->
+<div id="screen-shop" class="screen">
+  <div style="max-width:600px;margin:0 auto;width:100%;">
+    <button class="back-btn" onclick="showScreen('dashboard')">← BACK</button>
+    <br><br>
+    <h2>🛒 SHOP</h2>
+    <p class="sub mt" style="line-height:1.6;">Upgrades reset <span class="warn-text">every Sunday midnight SGT</span> for everyone simultaneously.</p>
+
+    <div class="panel mt">
+      <div class="panel-title">MULTI HACK</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div style="flex:1;">
+          <div style="font-size:1em;color:var(--g);margin-bottom:6px;">Hack Multiple Targets Simultaneously</div>
+          <div class="sub" style="font-size:.8em;line-height:1.6;">Current: <span id="shop-multihack-slots" class="warn-text">1 slot (level 0)</span></div>
+          <div class="sub" style="font-size:.75em;margin-top:4px;">+1 simultaneous hack per purchase • No limit</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="color:var(--r);font-family:'Orbitron',sans-serif;font-size:1em;margin-bottom:8px;">1000 CR</div>
+          <button class="btn btn-danger btn-sm" onclick="buyMultiHack()">BUY</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel mt">
+      <div class="panel-title">DROP SPEED</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div style="flex:1;">
+          <div style="font-size:1em;color:var(--g);margin-bottom:6px;">Faster Credit Drop Interval</div>
+          <div class="sub" style="font-size:.8em;line-height:1.6;">Current interval: <span id="shop-dropspeed-interval" class="warn-text">60:00 (level 0)</span></div>
+          <div class="sub" style="font-size:.75em;margin-top:4px;">Each purchase reduces interval by 10% of current • No limit</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="color:var(--r);font-family:'Orbitron',sans-serif;font-size:1em;margin-bottom:8px;">5000 CR</div>
+          <button class="btn btn-danger btn-sm" onclick="buyDropSpeed()">BUY</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel mt">
+      <div class="panel-title">IMMUNITY</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:16px;">
+        <div style="flex:1;">
+          <div style="font-size:1em;color:var(--g);margin-bottom:6px;">Become Unhackable for 1 Hour</div>
+          <div class="sub" style="font-size:.8em;line-height:1.6;">Status: <span id="shop-immunity-status" class="info-text">No immunity</span></div>
+          <div class="sub" style="font-size:.8em;margin-top:2px;">Used today: <span id="shop-immunity-used" class="warn-text">0/2</span> <span style="opacity:.6;">(resets midnight SGT)</span></div>
+          <div class="sub" style="font-size:.75em;margin-top:4px;">Stacks — buying 2 gives 2 hours • You can still hack others</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0;">
+          <div style="color:var(--r);font-family:'Orbitron',sans-serif;font-size:1em;margin-bottom:8px;">4000 CR each</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <button class="btn btn-info btn-sm" id="shop-immunity-buy1" onclick="buyImmunity(1)">BUY 1</button>
+            <button class="btn btn-info btn-sm" id="shop-immunity-buy2" onclick="buyImmunity(2)">BUY 2 (8000)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="sub mt" style="font-size:.75em;line-height:1.6;opacity:.6;">⚠ Multi Hack and Drop Speed reset every Sunday midnight SGT. Immunity resets daily at midnight SGT.</p>
+  </div>
+</div>
+
 <!-- ===== INCOMING HACK OVERLAY ===== -->
 <div id="overlay-incoming" class="">
   <div class="incoming-box">
@@ -470,16 +528,16 @@
   <div class="update-box">
     <div style="font-size:2em;margin-bottom:8px;">📡</div>
     <h2>SYSTEM UPDATE</h2>
-    <div class="update-version">v2.0 — DEPLOYED 12 JUN 2026</div>
+    <div class="update-version">v4.0 — DEPLOYED 12 JUN 2026</div>
     <ul class="update-list">
-      <li class="new">PIN system added — you now log in with a PIN (4–8 digits), separate from your hack password</li>
-      <li class="sec">Hack password and login PIN are now separate — changing your password no longer locks out hackers who already validated it</li>
-      <li class="new">Forgot password — use your PIN to reset your hack password anytime</li>
-      <li class="fix">Intercept now shows a clear INTERCEPTED message on the hacker's screen with a flashing red timer</li>
-      <li class="fix">Password change is blocked while someone is actively hacking you — intercept them first</li>
-      <li class="new">Hourly credit replenish now sends a push notification to your phone</li>
+      <li class="new">SHOP added — Multi Hack, Drop Speed, and Immunity upgrades</li>
+      <li class="new">Immunity (4000 CR) — become unhackable for 1 hour, max 2 per day</li>
+      <li class="new">Buy 2 immunities at once for 2 hours of protection</li>
+      <li class="new">Immune players show a 🛡 shield on the hack target list</li>
+      <li class="new">Multi Hack (1000 CR) — hack multiple people simultaneously</li>
+      <li class="new">Drop Speed (5000 CR) — reduce your credit drop interval by 10% each purchase</li>
     </ul>
-    <p class="sub" style="font-size:.8em;margin-bottom:16px;line-height:1.5;">⚠ All players need to re-login once to set up their PIN.</p>
+    <p class="sub" style="font-size:.8em;margin-bottom:16px;line-height:1.5;">Tap SHOP on the dashboard to get started.</p>
     <button class="btn btn-info btn-full" onclick="dismissUpdate(false)">GOT IT</button>
     <button class="btn btn-sm btn-full" style="margin-top:8px;opacity:.6;" onclick="dismissUpdate(true)">DON'T SHOW AGAIN</button>
   </div>
@@ -497,8 +555,7 @@ const firebaseConfig = {
 };
 const VAPID_KEY = "BK1TUpmITVbzOyMS0siUrjcXt-Wh4Wzuzc3zeQ76sQgi-8VxH-Hk69-zlcmX-hgaO8yC7ESpkaUkx7gxixdYGj8";
 
-// Update popup: show for 5 hours after this timestamp, unless dismissed
-const UPDATE_VERSION = 'v2'; // bump this string to force popup for everyone again
+const UPDATE_VERSION = 'v4';
 
 import { initializeApp }                    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, get, set, update, onValue, push, runTransaction }
@@ -520,10 +577,11 @@ const STEAL_SECS_PER_100 = 10;
 let db, messaging;
 let currentPlayer        = null;
 let incomingHackListener = null;
-let activeHackListener   = null;
-let currentHackId        = null;
-let hackTimerInterval    = null;
+let activeHackListener   = null; // listener for 'accessing' state hack
+let currentHackId        = null; // hack in 'accessing' state (infiltrate form open)
+let activeHacksMap       = new Map(); // hackId → { unsubscribe, timerInterval } for 'stealing' hacks
 let bonusTimerInterval   = null;
+let immunityInterval     = null;
 let revealedPw           = null;
 let infiltrateTarget     = null;
 let incomingHackId       = null;
@@ -572,27 +630,27 @@ function loadLeaderboard() {
   });
 }
 
-// When app comes back to foreground, re-sync any active hack timer
+// Re-sync all active hack timers when app returns to foreground (iOS fix)
 document.addEventListener('visibilitychange', async () => {
   if (document.visibilityState !== 'visible') return;
-  if (!currentHackId) return;
-  try {
-    const snap = await get(ref(db, `activeHacks/${currentHackId}`));
-    if (!snap.exists()) return;
-    const hack = snap.val();
-    if (hack.status === 'intercepted') return; // listener will handle
-    if (hack.status === 'stealing') {
-      if (Date.now() >= hack.endTime) {
-        // Completed while backgrounded
-        clearInterval(hackTimerInterval); hackTimerInterval = null;
-        await completeHack(currentHackId);
-      } else {
-        // Still in progress — restart the visual timer
-        if (hackTimerInterval) clearInterval(hackTimerInterval);
-        showActiveHackPanel(hack.targetName, hack.amount, hack.endTime, currentHackId);
+  for (const [hackId, info] of activeHacksMap) {
+    try {
+      const snap = await get(ref(db, `activeHacks/${hackId}`));
+      if (!snap.exists()) { cleanupStealingHack(hackId); continue; }
+      const hack = snap.val();
+      if (hack.status === 'intercepted') continue; // listener handles
+      if (hack.status === 'stealing') {
+        if (Date.now() >= hack.endTime) {
+          if (info.timerInterval) clearInterval(info.timerInterval);
+          activeHacksMap.set(hackId, { ...info, timerInterval: null });
+          await completeHack(hackId);
+        } else {
+          if (info.timerInterval) clearInterval(info.timerInterval);
+          restartHackTimer(hack.amount, hack.endTime, hackId);
+        }
       }
-    }
-  } catch(e) {}
+    } catch(e) {}
+  }
 });
 
 // =====================================================================
@@ -777,7 +835,7 @@ async function enterDashboard() {
   showScreen('dashboard');
   document.getElementById('dash-player-name').textContent = `// ${currentPlayer.name.toUpperCase()}`;
   resetInfiltratePanel();
-  hideActiveHackPanel();
+  document.getElementById('active-hacks-container').innerHTML = '';
   document.getElementById('overlay-intercepted').classList.remove('visible');
   document.getElementById('overlay-incoming').classList.remove('visible');
   document.getElementById('overlay-change-pw').classList.remove('visible');
@@ -788,6 +846,8 @@ async function enterDashboard() {
   setupIncomingHackListener();
   registerFCMToken();
   setupChatListener();
+  const immSnap = await get(ref(db, `players/${currentPlayer.id}/immunityUntil`)).catch(() => null);
+  startImmunityCountdown(immSnap?.exists() ? immSnap.val() : 0);
 }
 
 function setupBalanceListener() {
@@ -805,23 +865,31 @@ async function checkHourlyBonus() {
     const snap = await get(ref(db, `players/${currentPlayer.id}`));
     if (!snap.exists()) return;
     const data = snap.val();
+    const dropLevel = data.dropLevel || 0;
+    const effectiveHourlyMs = HOURLY_MS * Math.pow(0.9, dropLevel);
     const now = Date.now();
     const elapsed = now - (data.lastBonusTime || now);
-    const hoursEarned = Math.floor(elapsed / HOURLY_MS);
-    if (hoursEarned > 0) {
-      const bonus = hoursEarned * HOURLY_BONUS;
+    const cyclesEarned = Math.floor(elapsed / effectiveHourlyMs);
+    if (cyclesEarned > 0) {
+      const bonus = cyclesEarned * HOURLY_BONUS;
       await update(ref(db, `players/${currentPlayer.id}`), {
         balance:       (data.balance || 0) + bonus,
-        lastBonusTime: data.lastBonusTime + hoursEarned * HOURLY_MS,
+        lastBonusTime: data.lastBonusTime + cyclesEarned * effectiveHourlyMs,
       });
-      showToast(`+${bonus} CR — ${hoursEarned}h bonus!`, 'ok', 4000);
+      showToast(`+${bonus} CR — ${cyclesEarned}× bonus!`, 'ok', 4000);
     }
   } catch(e) {}
 }
 
-function startBonusCountdown() {
+async function startBonusCountdown() {
   if (bonusTimerInterval) clearInterval(bonusTimerInterval);
   let lastBonusTimeCache = null;
+  let effectiveHourlyMs = HOURLY_MS;
+
+  try {
+    const snap = await get(ref(db, `players/${currentPlayer.id}/dropLevel`));
+    effectiveHourlyMs = HOURLY_MS * Math.pow(0.9, snap.exists() ? (snap.val() || 0) : 0);
+  } catch(e) {}
 
   const tick = async () => {
     try {
@@ -830,19 +898,19 @@ function startBonusCountdown() {
         if (!snap.exists()) return;
         lastBonusTimeCache = snap.val();
       }
-      const remaining = (lastBonusTimeCache + HOURLY_MS) - Date.now();
+      const remaining = (lastBonusTimeCache + effectiveHourlyMs) - Date.now();
       if (remaining <= 0) {
         clearInterval(bonusTimerInterval);
         bonusTimerInterval = null;
         lastBonusTimeCache = null;
         await checkHourlyBonus();
-        startBonusCountdown(); // restart after awarding
+        startBonusCountdown();
         return;
       }
       const m = Math.floor(remaining / 60000);
       const s = Math.floor((remaining % 60000) / 1000);
       document.getElementById('bonus-timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-      document.getElementById('bonus-fill').style.width = (100 - remaining / HOURLY_MS * 100) + '%';
+      document.getElementById('bonus-fill').style.width = (100 - remaining / effectiveHourlyMs * 100) + '%';
     } catch(e) {}
   };
   tick();
@@ -852,17 +920,31 @@ function startBonusCountdown() {
 // =====================================================================
 // HACK SELECT
 // =====================================================================
-function buildHackTargetList() {
+async function buildHackTargetList() {
   const list = document.getElementById('hack-target-list');
+  list.innerHTML = '<div class="sub" style="font-size:.8em;padding:8px 0;">Loading...</div>';
+  const now = Date.now();
+  const targets = PLAYERS.filter(p => p.id !== currentPlayer?.id);
+  const immunitySnaps = await Promise.all(
+    targets.map(p => get(ref(db, `players/${p.id}/immunityUntil`)).catch(() => null))
+  );
   list.innerHTML = '';
-  PLAYERS.filter(p => p.id !== currentPlayer?.id).forEach(p => {
+  targets.forEach((p, i) => {
+    const immunityUntil = immunitySnaps[i]?.exists() ? immunitySnaps[i].val() : 0;
+    const isImmune = immunityUntil > now;
     const card = document.createElement('div');
     card.className = 'target-card';
+    if (isImmune) card.style.opacity = '0.6';
+    const remaining = isImmune ? immunityUntil - now : 0;
+    const rm = Math.floor(remaining / 60000), rs = Math.floor((remaining % 60000) / 1000);
+    const statusText = isImmune
+      ? `<span style="color:var(--b);">🛡 IMMUNE — ${String(rm).padStart(2,'0')}:${String(rs).padStart(2,'0')} remaining</span>`
+      : 'Costs 1000 CR to reveal password';
     card.innerHTML = `
       <div class="t-avatar">${p.avatar}</div>
-      <div><div class="t-name">${p.name.toUpperCase()}</div><div class="t-status sub">Costs 1000 CR to reveal password</div></div>
-      <div style="margin-left:auto"><button class="btn btn-danger btn-sm">SELECT</button></div>`;
-    card.onclick = () => confirmHackPurchase(p);
+      <div><div class="t-name">${p.name.toUpperCase()}</div><div class="t-status sub" style="margin-top:4px;">${statusText}</div></div>
+      <div style="margin-left:auto"><button class="btn btn-danger btn-sm"${isImmune ? ' disabled' : ''}>SELECT</button></div>`;
+    if (!isImmune) card.onclick = () => confirmHackPurchase(p);
     list.appendChild(card);
   });
 }
@@ -948,6 +1030,18 @@ async function validateStolen() {
   errEl.textContent = '';
   if (!pw) { errEl.textContent = 'Enter a password.'; return; }
 
+  if (currentHackId) { errEl.textContent = 'Execute or cancel your current hack first.'; return; }
+
+  try {
+    const playerSnap = await get(ref(db, `players/${currentPlayer.id}`));
+    const multiHackLevel = playerSnap.exists() ? (playerSnap.val()?.multiHackLevel || 0) : 0;
+    const maxSlots = 1 + multiHackLevel;
+    if (activeHacksMap.size >= maxSlots) {
+      errEl.textContent = `Max ${maxSlots} simultaneous hack${maxSlots > 1 ? 's' : ''}. Buy Multi Hack in SHOP for more.`;
+      return;
+    }
+  } catch(e) {}
+
   try {
     let foundPlayer = null;
     for (const p of PLAYERS) {
@@ -956,6 +1050,15 @@ async function validateStolen() {
       if (snap.exists() && snap.val() === pw) { foundPlayer = p; break; }
     }
     if (!foundPlayer) { errEl.textContent = '⚠ PASSWORD INVALID — No matching account.'; return; }
+
+    const immSnap = await get(ref(db, `players/${foundPlayer.id}/immunityUntil`));
+    const immunityUntil = immSnap.exists() ? immSnap.val() : 0;
+    if (immunityUntil > Date.now()) {
+      const remaining = immunityUntil - Date.now();
+      const m = Math.floor(remaining / 60000), s = Math.floor((remaining % 60000) / 1000);
+      errEl.textContent = `⚠ ${foundPlayer.name} has IMMUNITY — ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} remaining. Cannot infiltrate.`;
+      return;
+    }
 
     const balSnap = await get(ref(db, `players/${foundPlayer.id}/balance`));
     const bal = balSnap.exists() ? balSnap.val() : 0;
@@ -1012,40 +1115,73 @@ async function executeHack() {
   const endTime = Date.now() + Math.ceil(amtRaw / 100) * STEAL_SECS_PER_100 * 1000;
   await update(ref(db, `activeHacks/${currentHackId}`), { amount: amtRaw, endTime, status: 'stealing' });
 
+  // Move hack from accessing → stealing map, transfer listener
+  const hackId = currentHackId;
+  const targetName = infiltrateTarget.targetName;
+  activeHacksMap.set(hackId, { unsubscribe: activeHackListener, timerInterval: null });
+  activeHackListener = null;
+  currentHackId    = null;
+  infiltrateTarget = null;
+
+  // Reset form so another hack can be started immediately
   document.getElementById('target-info-box').classList.remove('visible');
-  document.getElementById('infiltrate-panel').style.display = 'none';
-  showActiveHackPanel(infiltrateTarget.targetName, amtRaw, endTime, currentHackId);
+  document.getElementById('infiltrate-pw-input').value = '';
+  document.getElementById('infiltrate-error').textContent = '';
+  document.getElementById('steal-amount').value = '';
+  document.getElementById('steal-time-display').textContent = '';
+
+  showActiveHackPanel(targetName, amtRaw, endTime, hackId);
 }
 window.executeHack = executeHack;
 
 // =====================================================================
-// ACTIVE HACK PANEL
+// ACTIVE HACK PANELS (one per stealing hack)
 // =====================================================================
 function showActiveHackPanel(targetName, amount, endTime, hackId) {
-  const panel = document.getElementById('active-hack-panel');
-  panel.classList.add('visible');
-  document.getElementById('hack-target-label').textContent = `TARGET: ${targetName.toUpperCase()}`;
-  document.getElementById('hack-amount-label').textContent = `${amount} CR`;
-  document.getElementById('hack-timer-display').className  = 'hack-timer';
-  document.getElementById('hack-status-text').textContent  = 'Processing transfer...';
+  const container = document.getElementById('active-hacks-container');
+  const existing = document.getElementById(`hack-panel-${hackId}`);
+  if (existing) existing.remove();
 
-  const totalMs = endTime - Date.now();
-  if (hackTimerInterval) clearInterval(hackTimerInterval);
+  const panel = document.createElement('div');
+  panel.id = `hack-panel-${hackId}`;
+  panel.className = 'panel';
+  panel.style.cssText = 'border-color:var(--r);margin-bottom:12px;';
+  panel.innerHTML = `
+    <div class="panel-title">HACK IN PROGRESS</div>
+    <div class="hack-status-row">
+      <span class="info-text">TARGET: ${escapeHtml(targetName.toUpperCase())}</span>
+      <span class="hack-amount">${amount} CR</span>
+    </div>
+    <div class="hack-timer" id="hack-timer-${hackId}">00:00</div>
+    <div class="hack-progress-bar"><div class="hack-progress-fill" id="hack-fill-${hackId}"></div></div>
+    <div style="font-size:.75em;color:var(--g2);margin-bottom:12px;" id="hack-status-${hackId}">Processing transfer...</div>
+    <button class="btn btn-sm" onclick="abortHack('${hackId}')">ABORT HACK</button>
+  `;
+  container.insertBefore(panel, container.firstChild);
+  restartHackTimer(amount, endTime, hackId);
+}
 
+function restartHackTimer(amount, endTime, hackId) {
+  const totalMs = Math.ceil(amount / 100) * STEAL_SECS_PER_100 * 1000;
   const tick = async () => {
     const remaining = endTime - Date.now();
     if (remaining <= 0) {
-      clearInterval(hackTimerInterval); hackTimerInterval = null;
+      const info = activeHacksMap.get(hackId);
+      if (info?.timerInterval) { clearInterval(info.timerInterval); activeHacksMap.set(hackId, { ...info, timerInterval: null }); }
       await completeHack(hackId);
       return;
     }
     const secs = Math.ceil(remaining / 1000);
     const m = Math.floor(secs / 60), s = secs % 60;
-    document.getElementById('hack-timer-display').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    document.getElementById('hack-progress-fill').style.width = (100 - remaining / totalMs * 100) + '%';
+    const timerEl = document.getElementById(`hack-timer-${hackId}`);
+    const fillEl  = document.getElementById(`hack-fill-${hackId}`);
+    if (timerEl) timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (fillEl)  fillEl.style.width  = (100 - remaining / totalMs * 100) + '%';
   };
   tick();
-  hackTimerInterval = setInterval(tick, 500);
+  const timerInterval = setInterval(tick, 500);
+  const info = activeHacksMap.get(hackId);
+  activeHacksMap.set(hackId, { ...(info || {}), timerInterval });
 }
 
 async function completeHack(hackId) {
@@ -1057,28 +1193,50 @@ async function completeHack(hackId) {
     await runTransaction(ref(db, `players/${hack.targetId}/balance`), bal => Math.max(0, (bal || 0) - hack.amount));
     await runTransaction(ref(db, `players/${hack.hackerId}/balance`), bal => (bal || 0) + hack.amount);
     await update(ref(db, `activeHacks/${hackId}`), { status: 'completed' });
-    hideActiveHackPanel();
-    document.getElementById('infiltrate-panel').style.display = '';
-    currentHackId = infiltrateTarget = null;
+    cleanupStealingHack(hackId);
     showToast(`✓ HACK COMPLETE — ${hack.amount} CR transferred!`, 'ok', 5000);
   } catch(e) { console.error(e); }
 }
 
-async function abortHack() {
-  if (!currentHackId) return;
-  await update(ref(db, `activeHacks/${currentHackId}`), { status: 'aborted' });
-  cleanupActiveHack();
+async function abortHack(hackId) {
+  if (hackId) {
+    // Abort a stealing hack
+    await update(ref(db, `activeHacks/${hackId}`), { status: 'aborted' }).catch(() => {});
+    cleanupStealingHack(hackId);
+  } else if (currentHackId) {
+    // Abort the accessing hack (no panel, just form)
+    await update(ref(db, `activeHacks/${currentHackId}`), { status: 'aborted' }).catch(() => {});
+    if (activeHackListener) { activeHackListener(); activeHackListener = null; }
+    currentHackId = null;
+    infiltrateTarget = null;
+    resetInfiltratePanel();
+  }
   showToast('Hack aborted. No credits transferred.', 'warn');
 }
 window.abortHack = abortHack;
 
-function hideActiveHackPanel() {
-  document.getElementById('active-hack-panel').classList.remove('visible');
-  if (hackTimerInterval) { clearInterval(hackTimerInterval); hackTimerInterval = null; }
+async function cancelAccessing() {
+  if (!currentHackId) return;
+  await update(ref(db, `activeHacks/${currentHackId}`), { status: 'aborted' }).catch(() => {});
+  if (activeHackListener) { activeHackListener(); activeHackListener = null; }
+  currentHackId = null;
+  infiltrateTarget = null;
+  resetInfiltratePanel();
+}
+window.cancelAccessing = cancelAccessing;
+
+function cleanupStealingHack(hackId) {
+  const info = activeHacksMap.get(hackId);
+  if (info) {
+    if (info.unsubscribe) info.unsubscribe();
+    if (info.timerInterval) clearInterval(info.timerInterval);
+    activeHacksMap.delete(hackId);
+  }
+  const panel = document.getElementById(`hack-panel-${hackId}`);
+  if (panel) panel.remove();
 }
 
 function resetInfiltratePanel() {
-  document.getElementById('infiltrate-panel').style.display = '';
   document.getElementById('target-info-box').classList.remove('visible');
   document.getElementById('infiltrate-pw-input').value = '';
   document.getElementById('infiltrate-error').textContent = '';
@@ -1087,40 +1245,42 @@ function resetInfiltratePanel() {
   infiltrateTarget = null;
 }
 
-function cleanupActiveHack() {
-  if (activeHackListener) { activeHackListener(); activeHackListener = null; }
-  hideActiveHackPanel();
-  resetInfiltratePanel();
-  currentHackId = null;
-}
-
 // =====================================================================
 // ACTIVE HACK LISTENER — hacker side (intercept detection)
 // =====================================================================
 function setupActiveHackListener(hackId) {
   if (activeHackListener) { activeHackListener(); activeHackListener = null; }
-  activeHackListener = onValue(ref(db, `activeHacks/${hackId}`), snap => {
+
+  let unsubscribe;
+  unsubscribe = onValue(ref(db, `activeHacks/${hackId}`), snap => {
     if (!snap.exists()) return;
     const hack = snap.val();
     if (hack.status !== 'intercepted') return;
 
-    // Show intercepted state on timer first
-    clearInterval(hackTimerInterval);
-    hackTimerInterval = null;
-    const timerEl = document.getElementById('hack-timer-display');
-    timerEl.textContent = 'INTERCEPTED';
-    timerEl.className   = 'hack-timer intercepted';
-    document.getElementById('hack-status-text').textContent = 'Connection severed by target.';
-    document.getElementById('hack-progress-fill').style.background = 'var(--r)';
+    // Stop timer if hack moved to stealing state
+    const mapInfo = activeHacksMap.get(hackId);
+    if (mapInfo?.timerInterval) clearInterval(mapInfo.timerInterval);
 
-    if (activeHackListener) { activeHackListener(); activeHackListener = null; }
+    // Update panel UI
+    const timerEl  = document.getElementById(`hack-timer-${hackId}`);
+    const statusEl = document.getElementById(`hack-status-${hackId}`);
+    const fillEl   = document.getElementById(`hack-fill-${hackId}`);
+    if (timerEl)  { timerEl.textContent = 'INTERCEPTED'; timerEl.className = 'hack-timer intercepted'; }
+    if (statusEl) statusEl.textContent = 'Connection severed by target.';
+    if (fillEl)   fillEl.style.background = 'var(--r)';
+
+    // Clean up state
+    if (hackId === currentHackId) {
+      currentHackId = null;
+      infiltrateTarget = null;
+      resetInfiltratePanel();
+    }
+    activeHacksMap.delete(hackId);
+    if (unsubscribe) unsubscribe();
 
     setTimeout(() => {
-      document.getElementById('active-hack-panel').classList.remove('visible');
-      document.getElementById('infiltrate-panel').style.display = '';
-      resetInfiltratePanel();
-      currentHackId    = null;
-      infiltrateTarget = null;
+      const panel = document.getElementById(`hack-panel-${hackId}`);
+      if (panel) panel.remove();
       document.getElementById('intercepted-msg').innerHTML =
         `ERROR: YOU HAVE BEEN INTERCEPTED<br><br>` +
         `<span class="warn-text">${hack.targetName.toUpperCase()}</span> detected your intrusion and severed the connection.<br><br>` +
@@ -1135,6 +1295,8 @@ function setupActiveHackListener(hackId) {
       document.getElementById('overlay-intercepted').classList.add('visible');
     }, 1500);
   });
+
+  activeHackListener = unsubscribe;
 }
 
 // =====================================================================
@@ -1346,18 +1508,176 @@ async function saveNewPin() {
 window.saveNewPin = saveNewPin;
 
 // =====================================================================
+// SHOP
+// =====================================================================
+function getCurrentSGTDate() {
+  return new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10);
+}
+
+function startImmunityCountdown(immunityUntil) {
+  if (immunityInterval) { clearInterval(immunityInterval); immunityInterval = null; }
+  const panel   = document.getElementById('immunity-panel');
+  const timerEl = document.getElementById('immunity-timer');
+  if (!immunityUntil || immunityUntil <= Date.now()) { panel.style.display = 'none'; return; }
+  panel.style.display = '';
+  const tick = () => {
+    const remaining = immunityUntil - Date.now();
+    if (remaining <= 0) {
+      clearInterval(immunityInterval); immunityInterval = null;
+      panel.style.display = 'none';
+      return;
+    }
+    const m = Math.floor(remaining / 60000), s = Math.floor((remaining % 60000) / 1000);
+    timerEl.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  };
+  tick();
+  immunityInterval = setInterval(tick, 1000);
+}
+
+async function openShop() {
+  showScreen('shop');
+  await refreshShopUI();
+}
+window.openShop = openShop;
+
+async function refreshShopUI() {
+  try {
+    const snap = await get(ref(db, `players/${currentPlayer.id}`));
+    if (!snap.exists()) return;
+    const data = snap.val();
+    const multiHackLevel = data.multiHackLevel || 0;
+    const dropLevel      = data.dropLevel || 0;
+
+    document.getElementById('shop-multihack-slots').textContent =
+      `${1 + multiHackLevel} slot${1 + multiHackLevel > 1 ? 's' : ''} (level ${multiHackLevel})`;
+
+    const effectiveMs = HOURLY_MS * Math.pow(0.9, dropLevel);
+    const mins = Math.floor(effectiveMs / 60000);
+    const secs = Math.floor((effectiveMs % 60000) / 1000);
+    document.getElementById('shop-dropspeed-interval').textContent =
+      `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')} (level ${dropLevel})`;
+
+    // Immunity
+    const immunityUntil = data.immunityUntil || 0;
+    const todayStr      = getCurrentSGTDate();
+    const dayCount      = (data.immunityDayStr === todayStr) ? (data.immunityDayCount || 0) : 0;
+    const remaining     = immunityUntil - Date.now();
+    const statusEl      = document.getElementById('shop-immunity-status');
+    if (remaining > 0) {
+      const m = Math.floor(remaining / 60000), s = Math.floor((remaining % 60000) / 1000);
+      statusEl.textContent = `ACTIVE — ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} remaining`;
+      statusEl.style.color = 'var(--b)';
+    } else {
+      statusEl.textContent = 'No immunity';
+      statusEl.style.color = '';
+    }
+    document.getElementById('shop-immunity-used').textContent = `${dayCount}/2`;
+    const canBuy1 = dayCount < 2;
+    const canBuy2 = dayCount < 1;
+    document.getElementById('shop-immunity-buy1').disabled = !canBuy1;
+    document.getElementById('shop-immunity-buy2').disabled = !canBuy2;
+  } catch(e) {}
+}
+
+async function buyImmunity(count) {
+  const todayStr = getCurrentSGTDate();
+  let snap;
+  try { snap = await get(ref(db, `players/${currentPlayer.id}`)); } catch(e) { showToast('Error.', 'err'); return; }
+  const data     = snap.val() || {};
+  const dayCount = (data.immunityDayStr === todayStr) ? (data.immunityDayCount || 0) : 0;
+  const canBuy   = 2 - dayCount;
+  if (canBuy <= 0)        { showToast('Daily limit reached (2/day).', 'err'); return; }
+  if (count > canBuy)     { showToast(`You can only buy ${canBuy} more today.`, 'err'); return; }
+
+  const cost = count * 4000;
+  if (!confirm(`Spend ${cost.toLocaleString()} CR for ${count} hour${count > 1 ? 's' : ''} of immunity?\n\n⚠ Limit: 2 per day (resets midnight SGT).`)) return;
+
+  try {
+    const result = await runTransaction(ref(db, `players/${currentPlayer.id}/balance`), bal => {
+      if (bal === null || bal < cost) return;
+      return bal - cost;
+    });
+    if (!result.committed) { showToast(`Insufficient credits. Need ${cost.toLocaleString()} CR.`, 'err'); return; }
+
+    const currentImmunity  = data.immunityUntil || 0;
+    const newImmunityUntil = Math.max(currentImmunity, Date.now()) + count * 3600000;
+    await update(ref(db, `players/${currentPlayer.id}`), {
+      immunityUntil:    newImmunityUntil,
+      immunityDayStr:   todayStr,
+      immunityDayCount: dayCount + count,
+    });
+
+    showToast(`🛡 Immunity active for ${count} hour${count > 1 ? 's' : ''}!`, 'ok', 5000);
+    startImmunityCountdown(newImmunityUntil);
+    await refreshShopUI();
+  } catch(e) { showToast('Transaction failed.', 'err'); }
+}
+window.buyImmunity = buyImmunity;
+
+async function buyMultiHack() {
+  if (!confirm('Spend 1000 CR for +1 hack slot?\n\n⚠ This only lasts for a week — resets Sunday midnight SGT.')) return;
+  try {
+    const result = await runTransaction(ref(db, `players/${currentPlayer.id}/balance`), bal => {
+      if (bal === null || bal < 1000) return;
+      return bal - 1000;
+    });
+    if (!result.committed) { showToast('Insufficient credits. Need 1000 CR.', 'err'); return; }
+    const levelSnap = await get(ref(db, `players/${currentPlayer.id}/multiHackLevel`));
+    const newLevel = (levelSnap.exists() ? (levelSnap.val() || 0) : 0) + 1;
+    await update(ref(db, `players/${currentPlayer.id}`), { multiHackLevel: newLevel });
+    showToast(`✓ Multi Hack upgraded! ${1 + newLevel} slots now.`, 'ok', 4000);
+    await refreshShopUI();
+  } catch(e) { showToast('Transaction failed.', 'err'); }
+}
+window.buyMultiHack = buyMultiHack;
+
+async function buyDropSpeed() {
+  if (!confirm('Spend 5000 CR to reduce drop interval by 10%?\n\n⚠ This only lasts for a week — resets Sunday midnight SGT.')) return;
+  try {
+    const result = await runTransaction(ref(db, `players/${currentPlayer.id}/balance`), bal => {
+      if (bal === null || bal < 5000) return;
+      return bal - 5000;
+    });
+    if (!result.committed) { showToast('Insufficient credits. Need 5000 CR.', 'err'); return; }
+    const levelSnap = await get(ref(db, `players/${currentPlayer.id}/dropLevel`));
+    const newLevel = (levelSnap.exists() ? (levelSnap.val() || 0) : 0) + 1;
+    await update(ref(db, `players/${currentPlayer.id}`), { dropLevel: newLevel });
+    const effectiveMs = HOURLY_MS * Math.pow(0.9, newLevel);
+    const mins = Math.floor(effectiveMs / 60000);
+    const secs = Math.floor((effectiveMs % 60000) / 1000);
+    showToast(`✓ Drop Speed upgraded! Next drop in ${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}.`, 'ok', 5000);
+    await refreshShopUI();
+    startBonusCountdown();
+  } catch(e) { showToast('Transaction failed.', 'err'); }
+}
+window.buyDropSpeed = buyDropSpeed;
+
+// =====================================================================
 // LOGOUT
 // =====================================================================
 async function logout() {
-  if (currentHackId) await update(ref(db, `activeHacks/${currentHackId}`), { status: 'aborted' }).catch(() => {});
+  const abortPromises = [];
+  if (currentHackId) abortPromises.push(update(ref(db, `activeHacks/${currentHackId}`), { status: 'aborted' }).catch(() => {}));
+  for (const hackId of activeHacksMap.keys()) {
+    abortPromises.push(update(ref(db, `activeHacks/${hackId}`), { status: 'aborted' }).catch(() => {}));
+  }
+  await Promise.all(abortPromises);
+
   if (bonusTimerInterval)   clearInterval(bonusTimerInterval);
-  if (hackTimerInterval)    clearInterval(hackTimerInterval);
-  if (incomingHackListener) incomingHackListener();
-  if (activeHackListener)   activeHackListener();
-  if (balanceListener)      balanceListener();
-  if (chatListener)       { chatListener(); chatListener = null; }
-  bonusTimerInterval = hackTimerInterval = null;
-  incomingHackListener = activeHackListener = balanceListener = null;
+  if (immunityInterval)     { clearInterval(immunityInterval); immunityInterval = null; }
+  if (activeHackListener)   { activeHackListener(); activeHackListener = null; }
+  if (incomingHackListener) { incomingHackListener(); incomingHackListener = null; }
+  if (balanceListener)      { balanceListener(); balanceListener = null; }
+  if (chatListener)         { chatListener(); chatListener = null; }
+
+  for (const [, info] of activeHacksMap) {
+    if (info.unsubscribe) info.unsubscribe();
+    if (info.timerInterval) clearInterval(info.timerInterval);
+  }
+  activeHacksMap.clear();
+  document.getElementById('active-hacks-container').innerHTML = '';
+
+  bonusTimerInterval = null;
   currentPlayer = infiltrateTarget = revealedPw = null;
   currentHackId = incomingHackId = null;
   showScreen('landing');
