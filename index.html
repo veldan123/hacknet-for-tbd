@@ -473,6 +473,29 @@ window.addEventListener('load', () => {
   checkUpdatePopup();
 });
 
+// When app comes back to foreground, re-sync any active hack timer
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState !== 'visible') return;
+  if (!currentHackId) return;
+  try {
+    const snap = await get(ref(db, `activeHacks/${currentHackId}`));
+    if (!snap.exists()) return;
+    const hack = snap.val();
+    if (hack.status === 'intercepted') return; // listener will handle
+    if (hack.status === 'stealing') {
+      if (Date.now() >= hack.endTime) {
+        // Completed while backgrounded
+        clearInterval(hackTimerInterval); hackTimerInterval = null;
+        await completeHack(currentHackId);
+      } else {
+        // Still in progress — restart the visual timer
+        if (hackTimerInterval) clearInterval(hackTimerInterval);
+        showActiveHackPanel(hack.targetName, hack.amount, hack.endTime, currentHackId);
+      }
+    }
+  } catch(e) {}
+});
+
 // =====================================================================
 // UPDATE POPUP
 // =====================================================================
