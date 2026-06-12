@@ -1,0 +1,16 @@
+{
+  "name": "HACKNET",
+  "short_name": "HACKNET",
+  "start_url": "/hacknet-for-tbd/",
+  "display": "standalone",
+  "background_color": "#060906",
+  "theme_color": "#060906",
+  "icons": [
+    {
+      "src": "/hacknet-for-tbd/icon.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any apple-touch-icon"
+    }
+  ]
+}
