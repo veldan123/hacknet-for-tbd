@@ -1742,7 +1742,7 @@ async function blockIntercept(hackId) {
       endTime: hack.endTime + pausedMs,
     });
     dismissBlockOverlay();
-  } catch(e) { showToast('Block failed.', 'err'); }
+  } catch(e) { showToast('Block failed: ' + (e?.message || e), 'err', 8000); console.error('blockIntercept error:', e); }
 }
 window.blockIntercept = blockIntercept;
 
