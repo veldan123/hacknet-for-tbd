@@ -239,6 +239,7 @@
     <div class="action-grid">
       <button class="btn btn-danger btn-full" onclick="showScreen('hack-select')">⚡ HACK FRIEND<br><span style="font-size:.7em;opacity:.7">COSTS 1000cr</span></button>
       <button class="btn btn-info btn-full" onclick="goToChangePassword()">🔑 CHANGE PASSWORD</button>
+      <button class="btn btn-full" onclick="showScreen('change-pin')" style="grid-column:1/-1;">🔐 CHANGE PIN</button>
     </div>
     <div class="panel infiltrate-panel" id="infiltrate-panel">
       <div class="panel-title">INFILTRATE — PASTE STOLEN PASSWORD</div>
@@ -324,6 +325,30 @@
     </div>
     <div id="changepw-error" class="err-text" style="font-size:.85em;min-height:20px;margin:8px 0;"></div>
     <button class="btn btn-lg btn-full" onclick="saveNewPassword()">SAVE PASSWORD</button>
+  </div>
+</div>
+
+<!-- ===== CHANGE PIN ===== -->
+<div id="screen-change-pin" class="screen">
+  <div class="changepw-box">
+    <button class="back-btn" onclick="showScreen('dashboard')">← BACK</button>
+    <br><br>
+    <h2>CHANGE PIN</h2>
+    <p class="sub mb" style="margin-top:8px;line-height:1.6;">Enter your current PIN to verify, then set a new one.</p>
+    <div class="form-group mt">
+      <label>CURRENT PIN</label>
+      <input type="password" id="current-pin-input" placeholder="Current PIN..." maxlength="8" inputmode="numeric" />
+    </div>
+    <div class="form-group">
+      <label>NEW PIN (4–8 digits)</label>
+      <input type="password" id="new-pin-input" placeholder="New PIN..." maxlength="8" inputmode="numeric" />
+    </div>
+    <div class="form-group">
+      <label>CONFIRM NEW PIN</label>
+      <input type="password" id="new-pin-confirm" placeholder="Confirm new PIN..." maxlength="8" inputmode="numeric" />
+    </div>
+    <div id="changepin-error" class="err-text" style="font-size:.85em;min-height:20px;margin:8px 0;"></div>
+    <button class="btn btn-lg btn-full" onclick="saveNewPin()">SAVE PIN</button>
   </div>
 </div>
 
@@ -1046,6 +1071,33 @@ function dismissIntercepted() {
   document.getElementById('overlay-intercepted').classList.remove('visible');
 }
 window.dismissIntercepted = dismissIntercepted;
+
+// =====================================================================
+// CHANGE PIN
+// =====================================================================
+async function saveNewPin() {
+  const current = document.getElementById('current-pin-input').value.trim();
+  const newPin  = document.getElementById('new-pin-input').value.trim();
+  const confirm = document.getElementById('new-pin-confirm').value.trim();
+  const errEl   = document.getElementById('changepin-error');
+  errEl.textContent = '';
+
+  if (!current)                  { errEl.textContent = 'Enter your current PIN.'; return; }
+  if (!newPin || newPin.length < 4){ errEl.textContent = 'New PIN must be 4–8 digits.'; return; }
+  if (!/^\d+$/.test(newPin))     { errEl.textContent = 'PIN must be digits only.'; return; }
+  if (newPin !== confirm)        { errEl.textContent = 'PINs do not match.'; return; }
+
+  try {
+    const snap = await get(ref(db, `players/${currentPlayer.id}/pin`));
+    if (!snap.exists() || snap.val() !== current) {
+      errEl.textContent = '⚠ Incorrect current PIN.'; return;
+    }
+    await update(ref(db, `players/${currentPlayer.id}`), { pin: newPin });
+    showToast('✓ PIN updated.', 'ok', 3000);
+    showScreen('dashboard');
+  } catch(e) { errEl.textContent = 'Error saving. Try again.'; }
+}
+window.saveNewPin = saveNewPin;
 
 // =====================================================================
 // LOGOUT
