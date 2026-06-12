@@ -13,13 +13,9 @@
     }
     body{background:var(--bg);color:var(--g);font-family:'Share Tech Mono',monospace;min-height:100vh;overflow-x:hidden;}
     body::after{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.07) 3px,rgba(0,0,0,0.07) 4px);pointer-events:none;z-index:9999;}
-
-    /* SCREENS */
     .screen{display:none;min-height:100vh;padding:20px;}
     .screen.active{display:flex;flex-direction:column;animation:fadeIn .3s ease;}
     @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-
-    /* TYPOGRAPHY */
     h1{font-family:'Orbitron',sans-serif;font-weight:900;color:var(--g);text-shadow:0 0 20px var(--g);letter-spacing:4px;}
     h2{font-family:'Orbitron',sans-serif;font-weight:700;color:var(--g);text-shadow:0 0 10px var(--g);letter-spacing:2px;}
     h3{font-family:'Orbitron',sans-serif;font-weight:400;color:var(--g2);letter-spacing:1px;}
@@ -27,13 +23,9 @@
     .err-text{color:var(--r);text-shadow:0 0 8px var(--r);}
     .warn-text{color:var(--y);}
     .info-text{color:var(--b);}
-
-    /* PANELS */
     .panel{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:20px;margin:12px 0;position:relative;}
     .panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--g),transparent);}
     .panel-title{font-size:.7em;color:var(--g2);letter-spacing:3px;text-transform:uppercase;margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:8px;}
-
-    /* BUTTONS */
     .btn{display:inline-block;border:1px solid var(--g);color:var(--g);background:transparent;font-family:'Share Tech Mono',monospace;font-size:.9em;padding:10px 20px;cursor:pointer;letter-spacing:2px;text-transform:uppercase;transition:all .2s;border-radius:2px;outline:none;}
     .btn:hover{background:rgba(0,255,65,.1);box-shadow:0 0 15px rgba(0,255,65,.3);text-shadow:0 0 8px var(--g);}
     .btn:active{transform:scale(.97);}
@@ -47,18 +39,10 @@
     .btn-sm{padding:6px 14px;font-size:.8em;}
     .btn:disabled{opacity:.4;cursor:not-allowed;pointer-events:none;}
     .btn-full{width:100%;display:block;text-align:center;margin:8px 0;}
-
-    /* INPUTS */
-    input[type=text],input[type=password],input[type=number]{
-      background:var(--panel);border:1px solid var(--border);color:var(--g);
-      font-family:'Share Tech Mono',monospace;font-size:1em;padding:10px 14px;
-      width:100%;border-radius:2px;outline:none;letter-spacing:1px;
-    }
+    input[type=text],input[type=password],input[type=number]{background:var(--panel);border:1px solid var(--border);color:var(--g);font-family:'Share Tech Mono',monospace;font-size:1em;padding:10px 14px;width:100%;border-radius:2px;outline:none;letter-spacing:1px;}
     input:focus{border-color:var(--g);box-shadow:0 0 8px rgba(0,255,65,.2);}
     input::placeholder{color:var(--g2);opacity:.6;}
     label{font-size:.8em;color:var(--g2);letter-spacing:2px;display:block;margin-bottom:6px;}
-
-    /* LANDING */
     #screen-landing{align-items:center;justify-content:center;text-align:center;}
     .logo{font-size:clamp(2em,8vw,4em);margin-bottom:8px;animation:pulse 3s infinite;}
     .logo-sub{font-size:.8em;color:var(--g2);letter-spacing:6px;margin-bottom:40px;}
@@ -68,14 +52,12 @@
     .player-card:hover{border-color:var(--g);box-shadow:0 0 20px rgba(0,255,65,.2);transform:translateY(-2px);}
     .player-card .avatar{font-size:2.5em;margin-bottom:8px;}
     .player-card .pname{font-family:'Orbitron',sans-serif;font-size:.9em;letter-spacing:2px;}
-
-    /* LOGIN */
     #screen-login{align-items:center;justify-content:center;}
     .login-box{max-width:420px;width:100%;}
     .login-box h2{margin-bottom:24px;text-align:center;}
     .form-group{margin-bottom:16px;}
-
-    /* DASHBOARD */
+    .forgot-link{background:none;border:none;color:var(--g2);font-family:'Share Tech Mono',monospace;font-size:.8em;letter-spacing:1px;cursor:pointer;text-decoration:underline;padding:4px 0;display:block;margin-top:4px;}
+    .forgot-link:hover{color:var(--y);}
     #screen-dashboard{max-width:600px;margin:0 auto;}
     .dash-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border);}
     .balance-display{text-align:right;}
@@ -85,23 +67,17 @@
     .bonus-bar{background:var(--dg);border-radius:2px;height:4px;margin-top:8px;overflow:hidden;}
     .bonus-fill{height:100%;background:var(--g);transition:width .5s linear;box-shadow:0 0 6px var(--g);}
     .bonus-info{display:flex;justify-content:space-between;font-size:.75em;color:var(--g2);margin-top:4px;}
-
-    /* HACK SELECT */
     #screen-hack-select{max-width:600px;margin:0 auto;}
     .target-card{background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:20px;margin:10px 0;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:16px;}
     .target-card:hover{border-color:var(--r);box-shadow:0 0 20px rgba(255,0,64,.15);}
     .target-card .t-avatar{font-size:2em;}
     .target-card .t-name{font-family:'Orbitron',sans-serif;font-size:.95em;letter-spacing:2px;}
     .target-card .t-status{font-size:.75em;color:var(--g2);margin-top:4px;}
-
-    /* PASSWORD REVEAL */
     #screen-password-reveal{max-width:600px;margin:0 auto;align-items:center;justify-content:center;}
     .pw-box{max-width:500px;width:100%;text-align:center;}
     .pw-display{background:#0d1a0d;border:1px solid var(--g);border-radius:4px;padding:24px;margin:20px 0;font-size:1.4em;letter-spacing:6px;text-shadow:0 0 10px var(--g);word-break:break-all;}
     .pw-display.no-pw{color:var(--g2);font-size:1em;letter-spacing:2px;font-style:italic;}
     .copied-msg{color:var(--y);font-size:.8em;opacity:0;transition:opacity .3s;height:20px;}
-
-    /* INFILTRATE */
     .infiltrate-panel{margin:12px 0;}
     .infiltrate-form{display:flex;gap:10px;}
     .infiltrate-form input{flex:1;}
@@ -113,8 +89,6 @@
     .steal-row{display:flex;gap:10px;align-items:flex-end;margin-top:8px;}
     .steal-row input[type=number]{width:120px;}
     .steal-time{font-size:.8em;color:var(--y);margin-top:6px;}
-
-    /* ACTIVE HACK */
     .active-hack-panel{display:none;}
     .active-hack-panel.visible{display:block;}
     .hack-progress-bar{background:var(--dg);border-radius:2px;height:8px;margin:12px 0;overflow:hidden;}
@@ -122,10 +96,9 @@
     .hack-status-row{display:flex;justify-content:space-between;font-size:.85em;margin-bottom:6px;}
     .hack-amount{font-size:1.2em;color:var(--r);font-family:'Orbitron',sans-serif;}
     .hack-timer{font-size:1.8em;color:var(--y);font-family:'Orbitron',sans-serif;text-align:center;margin:8px 0;text-shadow:0 0 10px var(--y);}
-
-    /* INCOMING HACK OVERLAY */
-    #overlay-incoming{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center;animation:fadeIn .3s ease;}
-    #overlay-incoming.visible{display:flex;}
+    .hack-timer.intercepted{color:var(--r);text-shadow:0 0 20px var(--r);animation:blink 0.5s step-end infinite;}
+    #overlay-incoming{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.85);z-index:500;align-items:center;justify-content:center;}
+    #overlay-incoming.visible{display:flex;animation:fadeIn .3s ease;}
     .incoming-box{background:var(--panel);border:2px solid var(--r);border-radius:6px;padding:32px;max-width:440px;width:90%;text-align:center;animation:flickerIn .4s ease,alarmPulse 1s infinite alternate;}
     @keyframes flickerIn{0%{opacity:0;transform:scale(.9)}100%{opacity:1;transform:scale(1)}}
     @keyframes alarmPulse{from{box-shadow:0 0 20px rgba(255,0,64,.3)}to{box-shadow:0 0 60px rgba(255,0,64,.8),0 0 100px rgba(255,0,64,.4)}}
@@ -133,31 +106,36 @@
     @keyframes blink{50%{opacity:0}}
     .incoming-title{font-family:'Orbitron',sans-serif;color:var(--r);font-size:1.2em;margin-bottom:8px;text-shadow:0 0 15px var(--r);}
     .incoming-msg{color:var(--y);margin-bottom:24px;font-size:.95em;line-height:1.6;}
-
-    /* INTERCEPTED OVERLAY */
     #overlay-intercepted{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:500;align-items:center;justify-content:center;}
     #overlay-intercepted.visible{display:flex;animation:fadeIn .3s ease;}
     .intercepted-box{background:var(--panel);border:2px solid var(--r);border-radius:6px;padding:40px;max-width:440px;width:90%;text-align:center;}
     .int-title{font-family:'Orbitron',sans-serif;color:var(--r);font-size:1.4em;margin:12px 0;text-shadow:0 0 20px var(--r);}
     .int-msg{color:var(--y);margin-bottom:24px;line-height:1.6;}
-
-    /* CHANGE PASSWORD */
     #screen-change-password{max-width:600px;margin:0 auto;align-items:center;justify-content:center;}
     .changepw-box{max-width:420px;width:100%;}
-
-    /* NOTIFICATION TOAST */
+    #screen-forgot-password{align-items:center;justify-content:center;}
+    .forgot-box{max-width:420px;width:100%;}
     #toast{position:fixed;top:20px;right:20px;background:var(--panel);border:1px solid var(--g);border-radius:4px;padding:14px 18px;font-size:.85em;z-index:1000;transform:translateX(120%);transition:transform .3s;max-width:300px;}
     #toast.show{transform:translateX(0);}
     #toast.err{border-color:var(--r);color:var(--r);}
     #toast.warn{border-color:var(--y);color:var(--y);}
-
-    /* CHANGE PW AFTER INTERCEPT */
     #overlay-change-pw{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:600;align-items:center;justify-content:center;}
     #overlay-change-pw.visible{display:flex;animation:fadeIn .3s ease;}
     .change-pw-box{background:var(--panel);border:2px solid var(--y);border-radius:6px;padding:32px;max-width:420px;width:90%;text-align:center;}
     .change-pw-box h2{color:var(--y);text-shadow:0 0 10px var(--y);margin-bottom:16px;}
-
-    /* MISC */
+    /* UPDATE POPUP */
+    #overlay-update{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.88);z-index:700;align-items:center;justify-content:center;}
+    #overlay-update.visible{display:flex;animation:fadeIn .4s ease;}
+    .update-box{background:var(--panel);border:2px solid var(--b);border-radius:6px;padding:32px;max-width:480px;width:92%;max-height:90vh;overflow-y:auto;}
+    .update-box h2{color:var(--b);text-shadow:0 0 10px var(--b);margin-bottom:4px;font-size:1.1em;}
+    .update-version{font-size:.7em;color:var(--g2);letter-spacing:3px;margin-bottom:20px;}
+    .update-list{list-style:none;margin:0 0 20px;padding:0;}
+    .update-list li{padding:8px 0;border-bottom:1px solid var(--border);font-size:.88em;line-height:1.5;}
+    .update-list li:last-child{border-bottom:none;}
+    .update-list li::before{content:'▸ ';color:var(--b);}
+    .update-list li.fix::before{content:'🔧 ';}
+    .update-list li.new::before{content:'✦ ';}
+    .update-list li.sec::before{content:'🔒 ';}
     .mt{margin-top:16px;}
     .mb{margin-bottom:16px;}
     .center{text-align:center;}
@@ -165,52 +143,79 @@
     .back-btn{background:none;border:none;color:var(--g2);font-family:'Share Tech Mono',monospace;cursor:pointer;font-size:.85em;letter-spacing:2px;padding:8px 0;display:inline-flex;align-items:center;gap:8px;}
     .back-btn:hover{color:var(--g);}
     .glitch{animation:glitch 3s infinite;}
-    @keyframes glitch{
-      0%,90%,100%{clip-path:none;transform:none}
-      92%{clip-path:rect(20px,9999px,30px,0);transform:skewX(-3deg)}
-      94%{clip-path:rect(60px,9999px,70px,0);transform:skewX(2deg)}
-      96%{clip-path:rect(10px,9999px,20px,0);transform:skewX(-1deg)}
-    }
+    @keyframes glitch{0%,90%,100%{clip-path:none;transform:none}92%{clip-path:rect(20px,9999px,30px,0);transform:skewX(-3deg)}94%{clip-path:rect(60px,9999px,70px,0);transform:skewX(2deg)}96%{clip-path:rect(10px,9999px,20px,0);transform:skewX(-1deg)}}
     ::-webkit-scrollbar{width:6px;background:var(--bg);}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
   </style>
 </head>
 <body>
 
-<!-- TOAST NOTIFICATION -->
 <div id="toast"></div>
 
-<!-- ===== LANDING SCREEN ===== -->
+<!-- ===== LANDING ===== -->
 <div id="screen-landing" class="screen active">
   <h1 class="logo glitch">HACKNET</h1>
   <p class="logo-sub">SELECT OPERATOR</p>
   <div class="player-grid" id="player-grid"></div>
 </div>
 
-<!-- ===== LOGIN SCREEN ===== -->
+<!-- ===== LOGIN ===== -->
 <div id="screen-login" class="screen">
   <div class="login-box">
     <button class="back-btn" onclick="showScreen('landing')">← BACK</button>
     <br><br>
     <h2 id="login-title">IDENTITY VERIFICATION</h2>
-    <p class="sub mb" id="login-sub">Enter your access key to continue.</p>
-    <div id="login-no-pw-msg" class="warn-text mb" style="display:none;font-size:.85em;letter-spacing:1px;line-height:1.6;">
-      ⚠ NO PASSWORD DETECTED<br>PLEASE CREATE YOUR FIRST PASSWORD
+    <p class="sub mb" id="login-sub">Enter your PIN to access your account.</p>
+    <div id="login-new-msg" class="warn-text mb" style="display:none;font-size:.85em;letter-spacing:1px;line-height:1.6;">
+      ⚠ FIRST LOGIN — SET UP YOUR PIN AND PASSWORD
     </div>
     <div class="form-group">
-      <label id="pw-label">ACCESS KEY</label>
-      <input type="password" id="login-pw-input" placeholder="••••••••••••" maxlength="32" />
+      <label id="pin-label">PIN (4–8 digits)</label>
+      <input type="password" id="login-pin-input" placeholder="••••••••" maxlength="8" inputmode="numeric" />
     </div>
-    <div id="login-confirm-group" class="form-group" style="display:none;">
-      <label>CONFIRM ACCESS KEY</label>
-      <input type="password" id="login-pw-confirm" placeholder="••••••••••••" maxlength="32" />
+    <div id="login-pin-confirm-group" class="form-group" style="display:none;">
+      <label>CONFIRM PIN</label>
+      <input type="password" id="login-pin-confirm" placeholder="••••••••" maxlength="8" inputmode="numeric" />
+    </div>
+    <div id="login-pw-group" class="form-group" style="display:none;">
+      <label>HACK PASSWORD (others will try to steal this)</label>
+      <input type="password" id="login-pw-input" placeholder="Enter a password..." maxlength="32" />
+    </div>
+    <div id="login-pw-confirm-group" class="form-group" style="display:none;">
+      <label>CONFIRM HACK PASSWORD</label>
+      <input type="password" id="login-pw-confirm" placeholder="Confirm password..." maxlength="32" />
     </div>
     <div id="login-error" class="err-text" style="font-size:.85em;min-height:20px;margin:8px 0;"></div>
     <button class="btn btn-lg btn-full" onclick="handleLogin()">AUTHENTICATE</button>
+    <button class="forgot-link" onclick="showScreen('forgot-password')" id="forgot-pw-link">Forgot password? Use your PIN to reset it</button>
   </div>
 </div>
 
-<!-- ===== DASHBOARD SCREEN ===== -->
+<!-- ===== FORGOT PASSWORD ===== -->
+<div id="screen-forgot-password" class="screen">
+  <div class="forgot-box">
+    <button class="back-btn" onclick="showScreen('login')">← BACK</button>
+    <br><br>
+    <h2>RESET PASSWORD</h2>
+    <p class="sub mb" style="margin-top:8px;line-height:1.6;">Enter your PIN to verify identity, then set a new hack password.</p>
+    <div class="form-group mt">
+      <label>YOUR PIN</label>
+      <input type="password" id="forgot-pin-input" placeholder="Enter your PIN..." maxlength="8" inputmode="numeric" />
+    </div>
+    <div class="form-group">
+      <label>NEW HACK PASSWORD</label>
+      <input type="password" id="forgot-new-pw" placeholder="New password..." maxlength="32" />
+    </div>
+    <div class="form-group">
+      <label>CONFIRM NEW HACK PASSWORD</label>
+      <input type="password" id="forgot-new-pw-confirm" placeholder="Confirm password..." maxlength="32" />
+    </div>
+    <div id="forgot-error" class="err-text" style="font-size:.85em;min-height:20px;margin:8px 0;"></div>
+    <button class="btn btn-lg btn-full" onclick="handleForgotPassword()">RESET PASSWORD</button>
+  </div>
+</div>
+
+<!-- ===== DASHBOARD ===== -->
 <div id="screen-dashboard" class="screen">
   <div style="max-width:600px;margin:0 auto;width:100%;">
     <div class="dash-header">
@@ -223,8 +228,6 @@
         <div class="balance-num" id="dash-balance">0</div>
       </div>
     </div>
-
-    <!-- Hourly bonus timer -->
     <div class="panel">
       <div class="panel-title">HOURLY CREDIT DROP</div>
       <div class="bonus-info">
@@ -233,14 +236,10 @@
       </div>
       <div class="bonus-bar"><div class="bonus-fill" id="bonus-fill" style="width:100%"></div></div>
     </div>
-
-    <!-- Action buttons -->
     <div class="action-grid">
       <button class="btn btn-danger btn-full" onclick="showScreen('hack-select')">⚡ HACK FRIEND<br><span style="font-size:.7em;opacity:.7">COSTS 1000cr</span></button>
-      <button class="btn btn-info btn-full" onclick="showScreen('change-password')">🔑 CHANGE PASSWORD</button>
+      <button class="btn btn-info btn-full" onclick="goToChangePassword()">🔑 CHANGE PASSWORD</button>
     </div>
-
-    <!-- Infiltrate panel -->
     <div class="panel infiltrate-panel" id="infiltrate-panel">
       <div class="panel-title">INFILTRATE — PASTE STOLEN PASSWORD</div>
       <div class="infiltrate-form">
@@ -248,13 +247,10 @@
         <button class="btn btn-warn btn-sm" onclick="validateStolen()">VALIDATE</button>
       </div>
       <div id="infiltrate-error" class="err-text" style="font-size:.8em;min-height:18px;margin-top:6px;"></div>
-
       <div class="target-info" id="target-info-box">
-        <div class="target-info-content">
-          <div class="sub" style="font-size:.75em;letter-spacing:2px;margin-bottom:8px;">◆ TARGET ACQUIRED</div>
-          <div class="ti-name" id="ti-name">—</div>
-          <div class="ti-bal" id="ti-balance">0 CR</div>
-        </div>
+        <div class="sub" style="font-size:.75em;letter-spacing:2px;margin-bottom:8px;">◆ TARGET ACQUIRED</div>
+        <div class="ti-name" id="ti-name">—</div>
+        <div class="ti-bal" id="ti-balance">0 CR</div>
         <hr class="divider">
         <div class="steal-section">
           <label>AMOUNT TO STEAL (CREDITS)</label>
@@ -266,8 +262,6 @@
         </div>
       </div>
     </div>
-
-    <!-- Active hack progress panel -->
     <div class="panel active-hack-panel" id="active-hack-panel">
       <div class="panel-title">HACK IN PROGRESS</div>
       <div class="hack-status-row">
@@ -281,24 +275,23 @@
       <div style="font-size:.75em;color:var(--g2);margin-bottom:12px;" id="hack-status-text">Processing transfer...</div>
       <button class="btn btn-sm" onclick="abortHack()">ABORT HACK</button>
     </div>
-
     <hr class="divider">
     <button class="btn btn-sm" style="opacity:.5;" onclick="logout()">DISCONNECT</button>
   </div>
 </div>
 
-<!-- ===== HACK SELECT SCREEN ===== -->
+<!-- ===== HACK SELECT ===== -->
 <div id="screen-hack-select" class="screen">
   <div style="max-width:600px;margin:0 auto;width:100%;">
     <button class="back-btn" onclick="showScreen('dashboard')">← BACK</button>
     <br><br>
     <h2>SELECT TARGET</h2>
-    <p class="sub mt" style="line-height:1.6;">Purchasing a target's password costs <span class="err-text">1000 CREDITS</span>.<br>You will see their password once confirmed.</p>
+    <p class="sub mt" style="line-height:1.6;">Purchasing a target's password costs <span class="err-text">1000 CREDITS</span>.</p>
     <div id="hack-target-list" class="mt"></div>
   </div>
 </div>
 
-<!-- ===== PASSWORD REVEAL SCREEN ===== -->
+<!-- ===== PASSWORD REVEAL ===== -->
 <div id="screen-password-reveal" class="screen">
   <div class="pw-box">
     <button class="back-btn" onclick="showScreen('dashboard')">← BACK TO DASHBOARD</button>
@@ -314,19 +307,19 @@
   </div>
 </div>
 
-<!-- ===== CHANGE PASSWORD SCREEN ===== -->
+<!-- ===== CHANGE PASSWORD ===== -->
 <div id="screen-change-password" class="screen">
   <div class="changepw-box">
     <button class="back-btn" onclick="showScreen('dashboard')">← BACK</button>
     <br><br>
-    <h2>CHANGE PASSWORD</h2>
-    <p class="sub mb" style="margin-top:8px;line-height:1.6;">Update your access key. All active hacks using your old password will still complete — change it to protect yourself in future.</p>
+    <h2>CHANGE HACK PASSWORD</h2>
+    <p class="sub mb" style="margin-top:8px;line-height:1.6;">Change the password others need to hack your account. You still log in with your PIN.</p>
     <div class="form-group mt">
-      <label>NEW ACCESS KEY</label>
+      <label>NEW HACK PASSWORD</label>
       <input type="password" id="new-pw-input" placeholder="Enter new password..." maxlength="32" />
     </div>
     <div class="form-group">
-      <label>CONFIRM NEW ACCESS KEY</label>
+      <label>CONFIRM NEW HACK PASSWORD</label>
       <input type="password" id="new-pw-confirm" placeholder="Confirm new password..." maxlength="32" />
     </div>
     <div id="changepw-error" class="err-text" style="font-size:.85em;min-height:20px;margin:8px 0;"></div>
@@ -346,28 +339,28 @@
   </div>
 </div>
 
-<!-- ===== INTERCEPTED OVERLAY (shown to hacker) ===== -->
+<!-- ===== INTERCEPTED OVERLAY (hacker) ===== -->
 <div id="overlay-intercepted" class="">
   <div class="intercepted-box">
     <div style="font-size:3em;margin-bottom:12px;">🔴</div>
     <div class="int-title">CONNECTION TERMINATED</div>
-    <div class="int-msg" id="intercepted-msg">ERROR: YOU HAVE BEEN INTERCEPTED<br><br>The target detected your intrusion and severed the connection. No credits were transferred.</div>
+    <div class="int-msg" id="intercepted-msg">ERROR: YOU HAVE BEEN INTERCEPTED</div>
     <button class="btn btn-lg" onclick="dismissIntercepted()">ACKNOWLEDGE</button>
   </div>
 </div>
 
-<!-- ===== FORCED CHANGE PW OVERLAY (after intercept) ===== -->
+<!-- ===== FORCED CHANGE PW (after intercept) ===== -->
 <div id="overlay-change-pw" class="">
   <div class="change-pw-box">
     <div style="font-size:2em;margin-bottom:8px;">🔑</div>
     <h2>CHANGE YOUR PASSWORD</h2>
-    <p class="sub mb" style="line-height:1.6;margin-top:8px;">Your password has been compromised. You must change it before continuing.</p>
+    <p class="sub mb" style="line-height:1.6;margin-top:8px;">Your password has been compromised. You must change it now.</p>
     <div class="form-group mt">
-      <label>NEW ACCESS KEY</label>
+      <label>NEW HACK PASSWORD</label>
       <input type="password" id="forced-pw-input" placeholder="Enter new password..." maxlength="32" />
     </div>
     <div class="form-group">
-      <label>CONFIRM NEW ACCESS KEY</label>
+      <label>CONFIRM NEW HACK PASSWORD</label>
       <input type="password" id="forced-pw-confirm" placeholder="Confirm new password..." maxlength="32" />
     </div>
     <div id="forced-pw-error" class="err-text" style="font-size:.85em;min-height:18px;margin:6px 0;"></div>
@@ -375,11 +368,27 @@
   </div>
 </div>
 
-<!-- ===== FIREBASE + GAME LOGIC ===== -->
+<!-- ===== UPDATE POPUP ===== -->
+<div id="overlay-update" class="">
+  <div class="update-box">
+    <div style="font-size:2em;margin-bottom:8px;">📡</div>
+    <h2>SYSTEM UPDATE</h2>
+    <div class="update-version">v2.0 — DEPLOYED 12 JUN 2026</div>
+    <ul class="update-list">
+      <li class="new">PIN system added — you now log in with a PIN (4–8 digits), separate from your hack password</li>
+      <li class="sec">Hack password and login PIN are now separate — changing your password no longer locks out hackers who already validated it</li>
+      <li class="new">Forgot password — use your PIN to reset your hack password anytime</li>
+      <li class="fix">Intercept now shows a clear INTERCEPTED message on the hacker's screen with a flashing red timer</li>
+      <li class="fix">Password change is blocked while someone is actively hacking you — intercept them first</li>
+      <li class="new">Hourly credit replenish now sends a push notification to your phone</li>
+    </ul>
+    <p class="sub" style="font-size:.8em;margin-bottom:16px;line-height:1.5;">⚠ All players need to re-login once to set up their PIN.</p>
+    <button class="btn btn-info btn-full" onclick="dismissUpdate(false)">GOT IT</button>
+    <button class="btn btn-sm btn-full" style="margin-top:8px;opacity:.6;" onclick="dismissUpdate(true)">DON'T SHOW AGAIN</button>
+  </div>
+</div>
+
 <script type="module">
-// =====================================================================
-// FIREBASE CONFIG — Replace all values below with your Firebase project
-// =====================================================================
 const firebaseConfig = {
   apiKey:            "AIzaSyC8mDEsjII_rg_cuRIlcQZ5nzX3Q3C8Ub4",
   authDomain:        "hacknet-ade86.firebaseapp.com",
@@ -390,65 +399,72 @@ const firebaseConfig = {
   appId:             "1:133895738147:web:5b82a470e4bec217437296"
 };
 const VAPID_KEY = "BK1TUpmITVbzOyMS0siUrjcXt-Wh4Wzuzc3zeQ76sQgi-8VxH-Hk69-zlcmX-hgaO8yC7ESpkaUkx7gxixdYGj8";
-// =====================================================================
 
-import { initializeApp }                   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
-import { getDatabase, ref, get, set, update, onValue, push, serverTimestamp, runTransaction, remove }
-                                            from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+// Update popup: show for 5 hours after this timestamp, unless dismissed
+const UPDATE_TIMESTAMP = 1749686400000; // 12 Jun 2026 00:00 UTC
+const UPDATE_EXPIRY    = UPDATE_TIMESTAMP + 5 * 60 * 60 * 1000;
+
+import { initializeApp }                    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, get, set, update, onValue, push, runTransaction }
+                                             from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
 import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging.js';
 
-// =====================================================================
-// GAME CONFIG
-// =====================================================================
 const PLAYERS = [
   { id: 'veldan',    name: 'Veldan',    avatar: '🥷' },
   { id: 'jonas',     name: 'Jonas',     avatar: '🦾' },
   { id: 'joel_tan',  name: 'Joel Tan',  avatar: '💻' },
   { id: 'dylan_cho', name: 'Dylan Cho', avatar: '⚡' },
 ];
-const STARTING_BALANCE       = 1000;
-const HOURLY_BONUS           = 1000;
-const HOURLY_MS              = 60 * 60 * 1000; // 1 hour in ms
-const HACK_COST              = 1000;            // cost to reveal password
-const STEAL_SECS_PER_100     = 60;             // seconds per 100 credits stolen
+const STARTING_BALANCE   = 1000;
+const HOURLY_BONUS       = 1000;
+const HOURLY_MS          = 60 * 60 * 1000;
+const HACK_COST          = 1000;
+const STEAL_SECS_PER_100 = 60;
 
-// =====================================================================
-// STATE
-// =====================================================================
 let db, messaging;
-let currentPlayer        = null; // { id, name, avatar }
+let currentPlayer        = null;
 let incomingHackListener = null;
 let activeHackListener   = null;
-let currentHackId        = null; // hack we are EXECUTING as hacker
+let currentHackId        = null;
 let hackTimerInterval    = null;
 let bonusTimerInterval   = null;
-let revealedPw           = null; // { targetId, password } after purchase
-let infiltrateTarget     = null; // { targetId, name } after validating stolen pw
-let incomingHackId       = null; // current incoming hack being shown to this player
+let revealedPw           = null;
+let infiltrateTarget     = null;
+let incomingHackId       = null;
 let balanceListener      = null;
+let isNewPlayer          = false;
 
-// =====================================================================
-// INIT
-// =====================================================================
 let app;
 try {
   app = initializeApp(firebaseConfig);
   db  = getDatabase(app);
 } catch(e) {
-  console.error('Firebase init failed:', e);
-  showToast('Firebase not configured — edit index.html with your config', 'err', 8000);
+  showToast('Firebase config error', 'err', 8000);
 }
-
-try {
-  messaging = getMessaging(app);
-} catch(e) {
-  console.warn('FCM not available:', e);
-}
+try { messaging = getMessaging(app); } catch(e) {}
 
 window.addEventListener('load', () => {
   buildLandingGrid();
   requestNotifPermission();
+  checkUpdatePopup();
 });
+
+// =====================================================================
+// UPDATE POPUP
+// =====================================================================
+function checkUpdatePopup() {
+  const dismissed = localStorage.getItem('hacknet_update_v2');
+  const now = Date.now();
+  if (!dismissed && now < UPDATE_EXPIRY) {
+    document.getElementById('overlay-update').classList.add('visible');
+  }
+}
+
+function dismissUpdate(permanent) {
+  if (permanent) localStorage.setItem('hacknet_update_v2', '1');
+  document.getElementById('overlay-update').classList.remove('visible');
+}
+window.dismissUpdate = dismissUpdate;
 
 // =====================================================================
 // SCREEN NAVIGATION
@@ -457,11 +473,12 @@ function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById('screen-' + id);
   if (el) el.classList.add('active');
+  if (id === 'hack-select') buildHackTargetList();
 }
 window.showScreen = showScreen;
 
 // =====================================================================
-// LANDING — build player cards
+// LANDING
 // =====================================================================
 function buildLandingGrid() {
   const grid = document.getElementById('player-grid');
@@ -476,78 +493,92 @@ function buildLandingGrid() {
 }
 
 // =====================================================================
-// PLAYER SELECTION → LOGIN
+// SELECT PLAYER → LOGIN
 // =====================================================================
 async function selectPlayer(player) {
   currentPlayer = player;
   document.getElementById('login-title').textContent = `// ${player.name.toUpperCase()}`;
   document.getElementById('login-error').textContent = '';
 
-  // Check if player has a password in DB
-  let hasPassword = false;
+  let hasPin = false;
   try {
-    const snap = await get(ref(db, `players/${player.id}/password`));
-    hasPassword = snap.exists() && snap.val();
+    const snap = await get(ref(db, `players/${player.id}/pin`));
+    hasPin = snap.exists() && snap.val();
   } catch(e) {}
 
-  const noMsgEl     = document.getElementById('login-no-pw-msg');
-  const confirmGrp  = document.getElementById('login-confirm-group');
-  const pwLabel     = document.getElementById('pw-label');
-  const loginSub    = document.getElementById('login-sub');
+  isNewPlayer = !hasPin;
+  const newMsg        = document.getElementById('login-new-msg');
+  const pinConfGrp    = document.getElementById('login-pin-confirm-group');
+  const pwGrp         = document.getElementById('login-pw-group');
+  const pwConfGrp     = document.getElementById('login-pw-confirm-group');
+  const pinLabel      = document.getElementById('pin-label');
+  const loginSub      = document.getElementById('login-sub');
+  const forgotLink    = document.getElementById('forgot-pw-link');
 
-  if (hasPassword) {
-    noMsgEl.style.display    = 'none';
-    confirmGrp.style.display = 'none';
-    pwLabel.textContent      = 'ACCESS KEY';
-    loginSub.textContent     = 'Enter your password to access your account.';
+  if (hasPin) {
+    newMsg.style.display     = 'none';
+    pinConfGrp.style.display = 'none';
+    pwGrp.style.display      = 'none';
+    pwConfGrp.style.display  = 'none';
+    pinLabel.textContent     = 'PIN';
+    loginSub.textContent     = 'Enter your PIN to access your account.';
+    forgotLink.style.display = 'block';
   } else {
-    noMsgEl.style.display    = 'block';
-    confirmGrp.style.display = 'block';
-    pwLabel.textContent      = 'CREATE ACCESS KEY';
-    loginSub.textContent     = 'No password on file. Set one now.';
+    newMsg.style.display     = 'block';
+    pinConfGrp.style.display = 'block';
+    pwGrp.style.display      = 'block';
+    pwConfGrp.style.display  = 'block';
+    pinLabel.textContent     = 'CREATE PIN (4–8 digits)';
+    loginSub.textContent     = 'First login. Set up your PIN and hack password.';
+    forgotLink.style.display = 'none';
   }
-  document.getElementById('login-pw-input').value   = '';
-  document.getElementById('login-pw-confirm').value = '';
+
+  document.getElementById('login-pin-input').value   = '';
+  document.getElementById('login-pin-confirm').value = '';
+  document.getElementById('login-pw-input').value    = '';
+  document.getElementById('login-pw-confirm').value  = '';
   showScreen('login');
 }
 
 // =====================================================================
-// LOGIN / REGISTER
+// LOGIN
 // =====================================================================
 async function handleLogin() {
-  const pw      = document.getElementById('login-pw-input').value.trim();
-  const confirm = document.getElementById('login-pw-confirm').value.trim();
+  const pin     = document.getElementById('login-pin-input').value.trim();
   const errEl   = document.getElementById('login-error');
   errEl.textContent = '';
 
-  if (!pw) { errEl.textContent = 'Password cannot be empty.'; return; }
-  if (pw.length < 3) { errEl.textContent = 'Password must be at least 3 characters.'; return; }
+  if (!pin || pin.length < 4) { errEl.textContent = 'PIN must be 4–8 digits.'; return; }
+  if (!/^\d+$/.test(pin))     { errEl.textContent = 'PIN must be digits only.'; return; }
 
   try {
-    const snap = await get(ref(db, `players/${currentPlayer.id}`));
+    if (isNewPlayer) {
+      const pinConfirm = document.getElementById('login-pin-confirm').value.trim();
+      const pw         = document.getElementById('login-pw-input').value.trim();
+      const pwConfirm  = document.getElementById('login-pw-confirm').value.trim();
 
-    if (!snap.exists() || !snap.val().password) {
-      // NEW PLAYER — register
-      if (confirm !== pw) { errEl.textContent = 'Passwords do not match.'; return; }
+      if (pin !== pinConfirm)   { errEl.textContent = 'PINs do not match.'; return; }
+      if (!pw || pw.length < 3) { errEl.textContent = 'Hack password must be at least 3 characters.'; return; }
+      if (pw !== pwConfirm)     { errEl.textContent = 'Passwords do not match.'; return; }
+
       const now = Date.now();
       await set(ref(db, `players/${currentPlayer.id}`), {
         balance:       STARTING_BALANCE,
+        pin:           pin,
         password:      pw,
         lastBonusTime: now,
         fcmToken:      null,
       });
-      showToast('Account created! Starting balance: 1000 CR', 'ok', 3000);
+      showToast('Account created! Balance: 1000 CR', 'ok', 3000);
     } else {
-      // EXISTING PLAYER — verify
-      const data = snap.val();
-      if (data.password !== pw) {
-        errEl.textContent = '⚠ ACCESS DENIED — Invalid password.';
+      const snap = await get(ref(db, `players/${currentPlayer.id}/pin`));
+      if (!snap.exists() || snap.val() !== pin) {
+        errEl.textContent = '⚠ ACCESS DENIED — Incorrect PIN.';
         return;
       }
     }
   } catch(e) {
-    errEl.textContent = 'Connection error. Check Firebase config.';
-    console.error(e);
+    errEl.textContent = 'Connection error.';
     return;
   }
 
@@ -556,41 +587,57 @@ async function handleLogin() {
 window.handleLogin = handleLogin;
 
 // =====================================================================
+// FORGOT PASSWORD (reset via PIN)
+// =====================================================================
+async function handleForgotPassword() {
+  const pin     = document.getElementById('forgot-pin-input').value.trim();
+  const newPw   = document.getElementById('forgot-new-pw').value.trim();
+  const confirm = document.getElementById('forgot-new-pw-confirm').value.trim();
+  const errEl   = document.getElementById('forgot-error');
+  errEl.textContent = '';
+
+  if (!pin || pin.length < 4)   { errEl.textContent = 'Enter your PIN.'; return; }
+  if (!newPw || newPw.length < 3){ errEl.textContent = 'Password must be at least 3 characters.'; return; }
+  if (newPw !== confirm)         { errEl.textContent = 'Passwords do not match.'; return; }
+
+  try {
+    const snap = await get(ref(db, `players/${currentPlayer.id}/pin`));
+    if (!snap.exists() || snap.val() !== pin) {
+      errEl.textContent = '⚠ Incorrect PIN.';
+      return;
+    }
+    await update(ref(db, `players/${currentPlayer.id}`), { password: newPw });
+    showToast('✓ Password reset. You can now log in.', 'ok', 3000);
+    showScreen('login');
+  } catch(e) {
+    errEl.textContent = 'Error. Try again.';
+  }
+}
+window.handleForgotPassword = handleForgotPassword;
+
+// =====================================================================
 // DASHBOARD
 // =====================================================================
 async function enterDashboard() {
   showScreen('dashboard');
   document.getElementById('dash-player-name').textContent = `// ${currentPlayer.name.toUpperCase()}`;
-
-  // Clear any previous infiltrate state
   resetInfiltratePanel();
   hideActiveHackPanel();
   document.getElementById('overlay-intercepted').classList.remove('visible');
   document.getElementById('overlay-incoming').classList.remove('visible');
   document.getElementById('overlay-change-pw').classList.remove('visible');
 
-  // Award any missed hourly bonuses
   await checkHourlyBonus();
-
-  // Start bonus countdown
   startBonusCountdown();
-
-  // Listen for real-time balance updates
   setupBalanceListener();
-
-  // Listen for incoming hacks
   setupIncomingHackListener();
-
-  // Register FCM token
   registerFCMToken();
 }
 
 function setupBalanceListener() {
   if (balanceListener) balanceListener();
   balanceListener = onValue(ref(db, `players/${currentPlayer.id}/balance`), snap => {
-    if (snap.exists()) {
-      document.getElementById('dash-balance').textContent = snap.val().toLocaleString();
-    }
+    if (snap.exists()) document.getElementById('dash-balance').textContent = snap.val().toLocaleString();
   });
 }
 
@@ -611,108 +658,79 @@ async function checkHourlyBonus() {
         balance:       (data.balance || 0) + bonus,
         lastBonusTime: data.lastBonusTime + hoursEarned * HOURLY_MS,
       });
-      showToast(`+${bonus} CR — ${hoursEarned} hour bonus awarded!`, 'ok', 4000);
+      showToast(`+${bonus} CR — ${hoursEarned}h bonus!`, 'ok', 4000);
     }
-  } catch(e) { console.error(e); }
+  } catch(e) {}
 }
 
 function startBonusCountdown() {
   if (bonusTimerInterval) clearInterval(bonusTimerInterval);
-
   const tick = async () => {
     try {
       const snap = await get(ref(db, `players/${currentPlayer.id}/lastBonusTime`));
       if (!snap.exists()) return;
-      const lastBonus = snap.val();
-      const nextBonus = lastBonus + HOURLY_MS;
-      const remaining = nextBonus - Date.now();
-
+      const remaining = (snap.val() + HOURLY_MS) - Date.now();
       if (remaining <= 0) {
-        // Award bonus
         const bSnap = await get(ref(db, `players/${currentPlayer.id}/balance`));
-        const bal = bSnap.exists() ? bSnap.val() : 0;
         await update(ref(db, `players/${currentPlayer.id}`), {
-          balance:       bal + HOURLY_BONUS,
+          balance: (bSnap.exists() ? bSnap.val() : 0) + HOURLY_BONUS,
           lastBonusTime: Date.now(),
         });
-        showToast(`+${HOURLY_BONUS} CR — Hourly bonus received!`, 'ok', 4000);
+        showToast(`+${HOURLY_BONUS} CR — Hourly bonus!`, 'ok', 4000);
         return;
       }
-
-      const mins = Math.floor(remaining / 60000);
-      const secs = Math.floor((remaining % 60000) / 1000);
-      document.getElementById('bonus-timer').textContent = `${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
-      const pct = 100 - (remaining / HOURLY_MS * 100);
-      document.getElementById('bonus-fill').style.width = pct + '%';
+      const m = Math.floor(remaining / 60000);
+      const s = Math.floor((remaining % 60000) / 1000);
+      document.getElementById('bonus-timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      document.getElementById('bonus-fill').style.width = (100 - remaining / HOURLY_MS * 100) + '%';
     } catch(e) {}
   };
-
   tick();
   bonusTimerInterval = setInterval(tick, 1000);
 }
 
 // =====================================================================
-// HACK SELECT SCREEN
+// HACK SELECT
 // =====================================================================
 function buildHackTargetList() {
   const list = document.getElementById('hack-target-list');
   list.innerHTML = '';
-  PLAYERS.filter(p => p.id !== currentPlayer.id).forEach(p => {
+  PLAYERS.filter(p => p.id !== currentPlayer?.id).forEach(p => {
     const card = document.createElement('div');
     card.className = 'target-card';
     card.innerHTML = `
       <div class="t-avatar">${p.avatar}</div>
-      <div>
-        <div class="t-name">${p.name.toUpperCase()}</div>
-        <div class="t-status sub">Click to reveal password — costs 1000 CR</div>
-      </div>
-      <div style="margin-left:auto"><button class="btn btn-danger btn-sm">SELECT</button></div>
-    `;
+      <div><div class="t-name">${p.name.toUpperCase()}</div><div class="t-status sub">Costs 1000 CR to reveal password</div></div>
+      <div style="margin-left:auto"><button class="btn btn-danger btn-sm">SELECT</button></div>`;
     card.onclick = () => confirmHackPurchase(p);
     list.appendChild(card);
   });
 }
 
-const origShowScreen = showScreen;
-window.showScreen = function(id) {
-  origShowScreen(id);
-  if (id === 'hack-select') buildHackTargetList();
-};
-
 async function confirmHackPurchase(target) {
-  // Check balance
   try {
     const snap = await get(ref(db, `players/${currentPlayer.id}/balance`));
-    const bal  = snap.exists() ? snap.val() : 0;
-    if (bal < HACK_COST) {
-      showToast(`Insufficient credits. Need ${HACK_COST} CR.`, 'err');
-      return;
+    if ((snap.exists() ? snap.val() : 0) < HACK_COST) {
+      showToast('Insufficient credits. Need 1000 CR.', 'err'); return;
     }
   } catch(e) { showToast('Error checking balance.', 'err'); return; }
 
   if (!confirm(`Spend 1000 CR to reveal ${target.name}'s password?`)) return;
 
-  // Deduct and fetch password
   try {
     await runTransaction(ref(db, `players/${currentPlayer.id}/balance`), bal => {
-      if (bal === null || bal < HACK_COST) return; // abort
+      if (bal === null || bal < HACK_COST) return;
       return bal - HACK_COST;
     });
-
     const pwSnap = await get(ref(db, `players/${target.id}/password`));
-    const pw     = pwSnap.exists() ? pwSnap.val() : null;
-
+    const pw = pwSnap.exists() ? pwSnap.val() : null;
     revealedPw = { targetId: target.id, targetName: target.name, password: pw };
-
     document.getElementById('reveal-target-label').textContent = `TARGET: ${target.name.toUpperCase()}`;
     document.getElementById('pw-display-value').textContent    = pw || '(no password set)';
     document.getElementById('pw-display-value').className      = pw ? 'pw-display' : 'pw-display no-pw';
     document.getElementById('copied-msg').style.opacity        = '0';
     showScreen('password-reveal');
-  } catch(e) {
-    showToast('Transaction failed. Try again.', 'err');
-    console.error(e);
-  }
+  } catch(e) { showToast('Transaction failed. Try again.', 'err'); }
 }
 window.confirmHackPurchase = confirmHackPurchase;
 
@@ -721,46 +739,70 @@ function copyPassword() {
   navigator.clipboard.writeText(revealedPw.password).catch(() => {});
   const msg = document.getElementById('copied-msg');
   msg.style.opacity = '1';
-  setTimeout(() => { msg.style.opacity = '0'; }, 2000);
+  setTimeout(() => msg.style.opacity = '0', 2000);
 }
 window.copyPassword = copyPassword;
 
 // =====================================================================
-// INFILTRATE — validate stolen password
+// CHANGE PASSWORD — block during active hack
+// =====================================================================
+async function goToChangePassword() {
+  // Check if someone is currently hacking this player
+  try {
+    const snap = await get(ref(db, 'activeHacks'));
+    if (snap.exists()) {
+      for (const hack of Object.values(snap.val())) {
+        if (hack.targetId === currentPlayer.id &&
+            (hack.status === 'accessing' || hack.status === 'stealing')) {
+          showToast('⚠ Cannot change password — you are being hacked! Intercept first.', 'err', 5000);
+          return;
+        }
+      }
+    }
+  } catch(e) {}
+  showScreen('change-password');
+}
+window.goToChangePassword = goToChangePassword;
+
+async function saveNewPassword() {
+  const pw      = document.getElementById('new-pw-input').value.trim();
+  const confirm = document.getElementById('new-pw-confirm').value.trim();
+  const errEl   = document.getElementById('changepw-error');
+  errEl.textContent = '';
+  if (!pw || pw.length < 3) { errEl.textContent = 'Password must be at least 3 characters.'; return; }
+  if (pw !== confirm)        { errEl.textContent = 'Passwords do not match.'; return; }
+  try {
+    await update(ref(db, `players/${currentPlayer.id}`), { password: pw });
+    showToast('✓ Password updated.', 'ok', 3000);
+    showScreen('dashboard');
+  } catch(e) { errEl.textContent = 'Error saving. Try again.'; }
+}
+window.saveNewPassword = saveNewPassword;
+
+// =====================================================================
+// INFILTRATE
 // =====================================================================
 async function validateStolen() {
   const pw    = document.getElementById('infiltrate-pw-input').value.trim();
   const errEl = document.getElementById('infiltrate-error');
   errEl.textContent = '';
-
   if (!pw) { errEl.textContent = 'Enter a password.'; return; }
 
-  // Find which player this password belongs to
   try {
     let foundPlayer = null;
     for (const p of PLAYERS) {
       if (p.id === currentPlayer.id) continue;
       const snap = await get(ref(db, `players/${p.id}/password`));
-      if (snap.exists() && snap.val() === pw) {
-        foundPlayer = p;
-        break;
-      }
+      if (snap.exists() && snap.val() === pw) { foundPlayer = p; break; }
     }
+    if (!foundPlayer) { errEl.textContent = '⚠ PASSWORD INVALID — No matching account.'; return; }
 
-    if (!foundPlayer) {
-      errEl.textContent = '⚠ PASSWORD INVALID — No matching account found.';
-      return;
-    }
-
-    // Get target balance
     const balSnap = await get(ref(db, `players/${foundPlayer.id}/balance`));
     const bal = balSnap.exists() ? balSnap.val() : 0;
-
     infiltrateTarget = { targetId: foundPlayer.id, targetName: foundPlayer.name, balance: bal };
 
-    // Create hack record in Firebase (notifies target)
-    const hackRef  = push(ref(db, 'activeHacks'));
-    currentHackId  = hackRef.key;
+    const hackRef = push(ref(db, 'activeHacks'));
+    currentHackId = hackRef.key;
     await set(hackRef, {
       hackerId:   currentPlayer.id,
       hackerName: currentPlayer.name,
@@ -769,41 +811,29 @@ async function validateStolen() {
       amount:     0,
       startTime:  Date.now(),
       endTime:    null,
-      status:     'accessing', // password validated, not yet stealing
+      status:     'accessing',
     });
 
-    // Show target info
     document.getElementById('ti-name').textContent    = foundPlayer.name.toUpperCase();
     document.getElementById('ti-balance').textContent = `${bal.toLocaleString()} CR AVAILABLE`;
     document.getElementById('target-info-box').classList.add('visible');
-    document.getElementById('steal-amount').max       = bal;
-    document.getElementById('steal-amount').value     = '';
+    document.getElementById('steal-amount').max   = bal;
+    document.getElementById('steal-amount').value = '';
     document.getElementById('steal-time-display').textContent = '';
     document.getElementById('infiltrate-pw-input').value = '';
 
-    // Listen for intercept
     setupActiveHackListener(currentHackId);
-
     showToast(`ACCESS GRANTED — ${foundPlayer.name}'s account breached`, 'warn', 3000);
-  } catch(e) {
-    errEl.textContent = 'Error validating. Check connection.';
-    console.error(e);
-  }
+  } catch(e) { errEl.textContent = 'Error validating. Check connection.'; }
 }
 window.validateStolen = validateStolen;
 
-// Update steal time display on amount change
 document.getElementById('steal-amount').addEventListener('input', function() {
   const amt = parseInt(this.value) || 0;
   const secs = Math.ceil(amt / 100) * STEAL_SECS_PER_100;
-  const mins = Math.floor(secs / 60);
-  const s    = secs % 60;
-  const el   = document.getElementById('steal-time-display');
-  if (amt > 0) {
-    el.textContent = `⏱ Processing time: ${mins > 0 ? mins + 'm ' : ''}${s > 0 ? s + 's' : ''}`;
-  } else {
-    el.textContent = '';
-  }
+  const m = Math.floor(secs / 60), s = secs % 60;
+  document.getElementById('steal-time-display').textContent =
+    amt > 0 ? `⏱ Processing time: ${m > 0 ? m + 'm ' : ''}${s > 0 ? s + 's' : ''}` : '';
 });
 
 // =====================================================================
@@ -811,35 +841,17 @@ document.getElementById('steal-amount').addEventListener('input', function() {
 // =====================================================================
 async function executeHack() {
   if (!infiltrateTarget || !currentHackId) return;
-
   const amtRaw = parseInt(document.getElementById('steal-amount').value);
-  if (!amtRaw || amtRaw < 100) {
-    showToast('Minimum steal amount is 100 CR.', 'warn');
-    return;
-  }
-  if (amtRaw % 100 !== 0) {
-    showToast('Amount must be a multiple of 100.', 'warn');
-    return;
-  }
+  if (!amtRaw || amtRaw < 100)     { showToast('Minimum 100 CR.', 'warn'); return; }
+  if (amtRaw % 100 !== 0)          { showToast('Must be multiple of 100.', 'warn'); return; }
 
-  // Verify target still has enough
   const balSnap = await get(ref(db, `players/${infiltrateTarget.targetId}/balance`));
   const currentBal = balSnap.exists() ? balSnap.val() : 0;
-  if (amtRaw > currentBal) {
-    showToast(`Target only has ${currentBal} CR.`, 'warn');
-    return;
-  }
+  if (amtRaw > currentBal) { showToast(`Target only has ${currentBal} CR.`, 'warn'); return; }
 
-  const duration = Math.ceil(amtRaw / 100) * STEAL_SECS_PER_100 * 1000; // ms
-  const endTime  = Date.now() + duration;
+  const endTime = Date.now() + Math.ceil(amtRaw / 100) * STEAL_SECS_PER_100 * 1000;
+  await update(ref(db, `activeHacks/${currentHackId}`), { amount: amtRaw, endTime, status: 'stealing' });
 
-  await update(ref(db, `activeHacks/${currentHackId}`), {
-    amount:  amtRaw,
-    endTime: endTime,
-    status:  'stealing',
-  });
-
-  // Hide infiltrate, show active hack panel
   document.getElementById('target-info-box').classList.remove('visible');
   document.getElementById('infiltrate-panel').style.display = 'none';
   showActiveHackPanel(infiltrateTarget.targetName, amtRaw, endTime, currentHackId);
@@ -847,35 +859,31 @@ async function executeHack() {
 window.executeHack = executeHack;
 
 // =====================================================================
-// ACTIVE HACK PANEL (hacker side)
+// ACTIVE HACK PANEL
 // =====================================================================
 function showActiveHackPanel(targetName, amount, endTime, hackId) {
-  document.getElementById('active-hack-panel').classList.add('visible');
+  const panel = document.getElementById('active-hack-panel');
+  panel.classList.add('visible');
   document.getElementById('hack-target-label').textContent = `TARGET: ${targetName.toUpperCase()}`;
   document.getElementById('hack-amount-label').textContent = `${amount} CR`;
+  document.getElementById('hack-timer-display').className  = 'hack-timer';
+  document.getElementById('hack-status-text').textContent  = 'Processing transfer...';
 
   const totalMs = endTime - Date.now();
-
   if (hackTimerInterval) clearInterval(hackTimerInterval);
 
   const tick = async () => {
     const remaining = endTime - Date.now();
     if (remaining <= 0) {
-      clearInterval(hackTimerInterval);
-      hackTimerInterval = null;
+      clearInterval(hackTimerInterval); hackTimerInterval = null;
       await completeHack(hackId);
       return;
     }
-
     const secs = Math.ceil(remaining / 1000);
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
+    const m = Math.floor(secs / 60), s = secs % 60;
     document.getElementById('hack-timer-display').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-
-    const progress = 100 - (remaining / totalMs * 100);
-    document.getElementById('hack-progress-fill').style.width = progress + '%';
+    document.getElementById('hack-progress-fill').style.width = (100 - remaining / totalMs * 100) + '%';
   };
-
   tick();
   hackTimerInterval = setInterval(tick, 500);
 }
@@ -883,30 +891,16 @@ function showActiveHackPanel(targetName, amount, endTime, hackId) {
 async function completeHack(hackId) {
   if (!hackId) return;
   try {
-    // Double-check status (might have been intercepted)
     const snap = await get(ref(db, `activeHacks/${hackId}`));
-    if (!snap.exists()) return;
+    if (!snap.exists() || snap.val().status !== 'stealing') return;
     const hack = snap.val();
-    if (hack.status !== 'stealing') return;
-
-    const amt = hack.amount;
-
-    // Transfer credits
-    await runTransaction(ref(db, `players/${hack.targetId}/balance`), bal => {
-      if (bal === null) return 0;
-      return Math.max(0, bal - amt);
-    });
-    await runTransaction(ref(db, `players/${hack.hackerId}/balance`), bal => {
-      return (bal || 0) + amt;
-    });
-
+    await runTransaction(ref(db, `players/${hack.targetId}/balance`), bal => Math.max(0, (bal || 0) - hack.amount));
+    await runTransaction(ref(db, `players/${hack.hackerId}/balance`), bal => (bal || 0) + hack.amount);
     await update(ref(db, `activeHacks/${hackId}`), { status: 'completed' });
-
     hideActiveHackPanel();
     document.getElementById('infiltrate-panel').style.display = '';
-    currentHackId  = null;
-    infiltrateTarget = null;
-    showToast(`✓ HACK COMPLETE — ${amt} CR transferred!`, 'ok', 5000);
+    currentHackId = infiltrateTarget = null;
+    showToast(`✓ HACK COMPLETE — ${hack.amount} CR transferred!`, 'ok', 5000);
   } catch(e) { console.error(e); }
 }
 
@@ -941,41 +935,51 @@ function cleanupActiveHack() {
 }
 
 // =====================================================================
-// ACTIVE HACK LISTENER (hacker listens for intercept)
+// ACTIVE HACK LISTENER — hacker side (intercept detection)
 // =====================================================================
 function setupActiveHackListener(hackId) {
   if (activeHackListener) { activeHackListener(); activeHackListener = null; }
   activeHackListener = onValue(ref(db, `activeHacks/${hackId}`), snap => {
     if (!snap.exists()) return;
     const hack = snap.val();
-    if (hack.status === 'intercepted') {
-      // Hacker gets kicked out
-      clearInterval(hackTimerInterval);
-      hackTimerInterval = null;
-      if (activeHackListener) { activeHackListener(); activeHackListener = null; }
+    if (hack.status !== 'intercepted') return;
+
+    // Show intercepted state on timer first
+    clearInterval(hackTimerInterval);
+    hackTimerInterval = null;
+    const timerEl = document.getElementById('hack-timer-display');
+    timerEl.textContent = 'INTERCEPTED';
+    timerEl.className   = 'hack-timer intercepted';
+    document.getElementById('hack-status-text').textContent = 'Connection severed by target.';
+    document.getElementById('hack-progress-fill').style.background = 'var(--r)';
+
+    if (activeHackListener) { activeHackListener(); activeHackListener = null; }
+
+    // Brief delay so hacker sees the INTERCEPTED state, then show overlay
+    setTimeout(() => {
       document.getElementById('active-hack-panel').classList.remove('visible');
       document.getElementById('infiltrate-panel').style.display = '';
       resetInfiltratePanel();
-      currentHackId   = null;
+      currentHackId    = null;
       infiltrateTarget = null;
       document.getElementById('overlay-intercepted').classList.add('visible');
       document.getElementById('intercepted-msg').innerHTML =
-        `ERROR: YOU HAVE BEEN INTERCEPTED<br><br><span class="warn-text">${hack.targetName.toUpperCase()}</span> detected your intrusion and severed the connection.<br><br>No credits were transferred.`;
-    }
+        `ERROR: YOU HAVE BEEN INTERCEPTED<br><br>` +
+        `<span class="warn-text">${hack.targetName.toUpperCase()}</span> detected your intrusion and severed the connection.<br><br>` +
+        `No credits were transferred.`;
+    }, 1500);
   });
 }
 
 // =====================================================================
-// INCOMING HACK LISTENER (target listens for being hacked)
+// INCOMING HACK LISTENER — target side
 // =====================================================================
 function setupIncomingHackListener() {
   if (incomingHackListener) { incomingHackListener(); incomingHackListener = null; }
   incomingHackListener = onValue(ref(db, 'activeHacks'), snap => {
     if (!snap.exists()) {
-      // All hacks gone — hide overlay if shown
-      if (!document.getElementById('overlay-change-pw').classList.contains('visible')) {
+      if (!document.getElementById('overlay-change-pw').classList.contains('visible'))
         document.getElementById('overlay-incoming').classList.remove('visible');
-      }
       return;
     }
 
@@ -992,20 +996,16 @@ function setupIncomingHackListener() {
     if (activeHack) {
       incomingHackId = activeHack.id;
       document.getElementById('incoming-msg').innerHTML =
-        `<span class="err-text">${activeHack.hackerName.toUpperCase()}</span> has breached your account!${
-          activeHack.status === 'stealing'
-            ? `<br><br>They are stealing <span class="err-text">${activeHack.amount} CR</span> from you.`
-            : '<br><br>They are accessing your system. Credits not yet being stolen.'
-        }`;
+        `<span class="err-text">${activeHack.hackerName.toUpperCase()}</span> has breached your account!` +
+        (activeHack.status === 'stealing'
+          ? `<br><br>They are stealing <span class="err-text">${activeHack.amount} CR</span> from you.`
+          : `<br><br>They are accessing your system. Not yet stealing.`);
       document.getElementById('overlay-incoming').classList.add('visible');
-
-      // Push notification (if app in background)
       sendPushNotification(`⚠ BREACH: ${activeHack.hackerName} is in your account!`);
     } else {
       incomingHackId = null;
-      if (!document.getElementById('overlay-change-pw').classList.contains('visible')) {
+      if (!document.getElementById('overlay-change-pw').classList.contains('visible'))
         document.getElementById('overlay-incoming').classList.remove('visible');
-      }
     }
   });
 }
@@ -1018,8 +1018,6 @@ async function interceptHack() {
   try {
     await update(ref(db, `activeHacks/${incomingHackId}`), { status: 'intercepted' });
     document.getElementById('overlay-incoming').classList.remove('visible');
-
-    // Force password change
     document.getElementById('forced-pw-input').value   = '';
     document.getElementById('forced-pw-confirm').value = '';
     document.getElementById('forced-pw-error').textContent = '';
@@ -1034,17 +1032,13 @@ async function saveForcedPassword() {
   const confirm = document.getElementById('forced-pw-confirm').value.trim();
   const errEl   = document.getElementById('forced-pw-error');
   errEl.textContent = '';
-
   if (!pw || pw.length < 3) { errEl.textContent = 'Password must be at least 3 characters.'; return; }
   if (pw !== confirm)        { errEl.textContent = 'Passwords do not match.'; return; }
-
   try {
     await update(ref(db, `players/${currentPlayer.id}`), { password: pw });
     document.getElementById('overlay-change-pw').classList.remove('visible');
     showToast('✓ Password changed. Account secured.', 'ok', 3000);
-  } catch(e) {
-    errEl.textContent = 'Error saving password. Try again.';
-  }
+  } catch(e) { errEl.textContent = 'Error saving. Try again.'; }
 }
 window.saveForcedPassword = saveForcedPassword;
 
@@ -1054,35 +1048,10 @@ function dismissIntercepted() {
 window.dismissIntercepted = dismissIntercepted;
 
 // =====================================================================
-// CHANGE PASSWORD (voluntary)
-// =====================================================================
-async function saveNewPassword() {
-  const pw      = document.getElementById('new-pw-input').value.trim();
-  const confirm = document.getElementById('new-pw-confirm').value.trim();
-  const errEl   = document.getElementById('changepw-error');
-  errEl.textContent = '';
-
-  if (!pw || pw.length < 3) { errEl.textContent = 'Password must be at least 3 characters.'; return; }
-  if (pw !== confirm)        { errEl.textContent = 'Passwords do not match.'; return; }
-
-  try {
-    await update(ref(db, `players/${currentPlayer.id}`), { password: pw });
-    showToast('✓ Password updated.', 'ok', 3000);
-    showScreen('dashboard');
-  } catch(e) {
-    errEl.textContent = 'Error saving. Try again.';
-  }
-}
-window.saveNewPassword = saveNewPassword;
-
-// =====================================================================
 // LOGOUT
 // =====================================================================
 async function logout() {
-  // Clean up hack if active
-  if (currentHackId) {
-    await update(ref(db, `activeHacks/${currentHackId}`), { status: 'aborted' }).catch(() => {});
-  }
+  if (currentHackId) await update(ref(db, `activeHacks/${currentHackId}`), { status: 'aborted' }).catch(() => {});
   if (bonusTimerInterval)   clearInterval(bonusTimerInterval);
   if (hackTimerInterval)    clearInterval(hackTimerInterval);
   if (incomingHackListener) incomingHackListener();
@@ -1097,39 +1066,29 @@ async function logout() {
 window.logout = logout;
 
 // =====================================================================
-// PUSH NOTIFICATIONS (FCM)
+// PUSH NOTIFICATIONS
 // =====================================================================
 async function requestNotifPermission() {
-  if (!('Notification' in window)) return;
-  if (Notification.permission === 'default') {
+  if ('Notification' in window && Notification.permission === 'default')
     await Notification.requestPermission().catch(() => {});
-  }
 }
 
 async function registerFCMToken() {
   if (!messaging || VAPID_KEY.startsWith('REPLACE')) return;
   try {
-    const reg = await navigator.serviceWorker.register('/hacknet-for-tbd/firebase-messaging-sw.js');
+    const reg   = await navigator.serviceWorker.register('/hacknet-for-tbd/firebase-messaging-sw.js');
     const token = await getToken(messaging, { vapidKey: VAPID_KEY, serviceWorkerRegistration: reg });
-    if (token) {
-      await update(ref(db, `players/${currentPlayer.id}`), { fcmToken: token });
-    }
-    // Handle foreground messages
+    if (token) await update(ref(db, `players/${currentPlayer.id}`), { fcmToken: token });
     onMessage(messaging, payload => {
       showToast(payload.notification?.body || 'Notification received', 'warn', 6000);
     });
-  } catch(e) { console.warn('FCM registration failed:', e); }
+  } catch(e) { console.warn('FCM failed:', e); }
 }
 
 function sendPushNotification(msg) {
-  // In-app notification (browser Notification API when app is open)
   if ('Notification' in window && Notification.permission === 'granted') {
-    try {
-      new Notification('⚠ HACKNET ALERT', { body: msg, icon: '/favicon.ico', tag: 'hacknet-alert' });
-    } catch(e) {}
+    try { new Notification('⚠ HACKNET ALERT', { body: msg, tag: 'hacknet-alert' }); } catch(e) {}
   }
-  // FCM push (when app is backgrounded) is handled server-side via Cloud Functions
-  // For full push delivery, set up Firebase Cloud Functions — see README
 }
 
 // =====================================================================
@@ -1141,10 +1100,9 @@ function showToast(msg, type = 'ok', duration = 3000) {
   el.textContent = msg;
   el.className   = `show ${type === 'err' ? 'err' : type === 'warn' ? 'warn' : ''}`;
   clearTimeout(toastTimeout);
-  toastTimeout = setTimeout(() => { el.className = ''; }, duration);
+  toastTimeout = setTimeout(() => el.className = '', duration);
 }
 window.showToast = showToast;
-
 </script>
 </body>
 </html>
