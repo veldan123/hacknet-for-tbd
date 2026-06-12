@@ -401,8 +401,7 @@ const firebaseConfig = {
 const VAPID_KEY = "BK1TUpmITVbzOyMS0siUrjcXt-Wh4Wzuzc3zeQ76sQgi-8VxH-Hk69-zlcmX-hgaO8yC7ESpkaUkx7gxixdYGj8";
 
 // Update popup: show for 5 hours after this timestamp, unless dismissed
-const UPDATE_TIMESTAMP = 1749686400000; // 12 Jun 2026 00:00 UTC
-const UPDATE_EXPIRY    = UPDATE_TIMESTAMP + 5 * 60 * 60 * 1000;
+const UPDATE_VERSION = 'v2'; // bump this string to force popup for everyone again
 
 import { initializeApp }                    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, get, set, update, onValue, push, runTransaction }
@@ -453,15 +452,14 @@ window.addEventListener('load', () => {
 // UPDATE POPUP
 // =====================================================================
 function checkUpdatePopup() {
-  const dismissed = localStorage.getItem('hacknet_update_v2');
-  const now = Date.now();
-  if (!dismissed && now < UPDATE_EXPIRY) {
+  const dismissed = localStorage.getItem('hacknet_update_dismissed');
+  if (dismissed !== UPDATE_VERSION) {
     document.getElementById('overlay-update').classList.add('visible');
   }
 }
 
 function dismissUpdate(permanent) {
-  if (permanent) localStorage.setItem('hacknet_update_v2', '1');
+  if (permanent) localStorage.setItem('hacknet_update_dismissed', UPDATE_VERSION);
   document.getElementById('overlay-update').classList.remove('visible');
 }
 window.dismissUpdate = dismissUpdate;
