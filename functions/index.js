@@ -44,6 +44,32 @@ exports.notifyHackStealing = onValueUpdated(
   }
 );
 
+// Fires when a new chat message is sent — notifies everyone except the sender
+exports.notifyChatMessage = onValueCreated(
+  { ref: "/chat/{msgId}", region: "asia-southeast1" },
+  async (event) => {
+    const msg = event.data.val();
+    if (!msg || !msg.playerId) return;
+
+    const db = getDatabase();
+    const playersSnap = await db.ref("players").get();
+    if (!playersSnap.exists()) return;
+
+    const players = playersSnap.val();
+    const sends = [];
+    for (const [playerId, data] of Object.entries(players)) {
+      if (playerId === msg.playerId) continue; // don't notify the sender
+      if (!data.fcmToken) continue;
+      sends.push(sendPush(
+        data.fcmToken,
+        `💬 ${msg.playerName}`,
+        msg.text
+      ));
+    }
+    await Promise.all(sends);
+  }
+);
+
 // Fires when a player's lastBonusTime updates — means they just got their hourly bonus
 exports.notifyHourlyBonus = onValueUpdated(
   { ref: "/players/{playerId}/lastBonusTime", region: "asia-southeast1" },
