@@ -1363,6 +1363,8 @@ function showBlockOverlay(hackId, interceptDeadline) {
   if (blockOverlayInterval) { clearInterval(blockOverlayInterval); blockOverlayInterval = null; }
   document.getElementById('block-btn').onclick = () => blockIntercept(hackId);
   document.getElementById('overlay-block-intercept').classList.add('visible');
+  showToast('⚡ TARGET INTERCEPTING — pay 100 CR to block!', 'warn', 10000);
+  sendPushNotification('⚡ TARGET INTERCEPTING — open app to block or lose your hack!');
 
   const tick = async () => {
     const secs = Math.max(0, Math.ceil((interceptDeadline - Date.now()) / 1000));
