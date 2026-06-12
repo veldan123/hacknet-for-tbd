@@ -185,6 +185,13 @@
     .lb-row.lb-top{border-color:#ffd70044;background:#0d130a;}
     ::-webkit-scrollbar{width:6px;background:var(--bg);}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    /* BLOCK INTERCEPT OVERLAY */
+    #overlay-block-intercept{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:520;align-items:center;justify-content:center;}
+    #overlay-block-intercept.visible{display:flex;animation:fadeIn .3s ease;}
+    .block-box{background:var(--panel);border:2px solid var(--y);border-radius:6px;padding:36px;max-width:440px;width:90%;text-align:center;animation:blockPulse 1s infinite alternate;}
+    @keyframes blockPulse{from{box-shadow:0 0 20px rgba(255,204,0,.3)}to{box-shadow:0 0 60px rgba(255,204,0,.9),0 0 100px rgba(255,204,0,.4)}}
+    .block-title{font-family:'Orbitron',sans-serif;color:var(--y);font-size:1.2em;margin-bottom:8px;text-shadow:0 0 15px var(--y);}
+    .block-countdown{font-size:3.5em;font-family:'Orbitron',sans-serif;color:var(--y);text-shadow:0 0 20px var(--y);margin:8px 0;animation:blink .8s step-end infinite;}
   </style>
 </head>
 <body>
@@ -389,10 +396,11 @@
   <div class="intercept-msg-box">
     <div style="font-size:2em;margin-bottom:8px;">😈</div>
     <h2>SEND A MESSAGE TO THE HACKER?</h2>
-    <p class="sub" style="margin:8px 0 16px;font-size:.8em;line-height:1.5;">Optional — they'll see it on their intercepted screen.</p>
+    <p class="sub" style="margin:8px 0 8px;font-size:.8em;line-height:1.5;">Optional — they'll see it on their screen.</p>
+    <div id="intercept-cost-note" style="display:none;color:var(--y);font-size:.82em;margin-bottom:12px;padding:8px;background:#1a1500;border:1px solid var(--y);border-radius:3px;"></div>
     <input type="text" id="intercept-taunt-input" placeholder='e.g. "lol i knew it was you"' maxlength="100" style="margin-bottom:12px;" />
-    <button class="btn btn-warn btn-full" onclick="sendInterceptTaunt()">SEND & CHANGE PASSWORD</button>
-    <button class="btn btn-sm btn-full" style="margin-top:6px;opacity:.6;" onclick="sendInterceptTaunt(true)">SKIP</button>
+    <button class="btn btn-warn btn-full" onclick="sendInterceptTaunt()">SEND INTERCEPT</button>
+    <button class="btn btn-sm btn-full" style="margin-top:6px;opacity:.6;" onclick="sendInterceptTaunt(true)">SKIP (no message)</button>
   </div>
 </div>
 
@@ -484,12 +492,34 @@
 <!-- ===== INCOMING HACK OVERLAY ===== -->
 <div id="overlay-incoming" class="">
   <div class="incoming-box">
-    <div class="incoming-icon">⚠</div>
-    <div class="incoming-title">BREACH DETECTED</div>
+    <div class="incoming-icon" id="incoming-icon">⚠</div>
+    <div class="incoming-title" id="incoming-title">BREACH DETECTED</div>
     <div class="incoming-msg" id="incoming-msg">An unknown operator has accessed your account.</div>
-    <button class="btn btn-danger btn-lg" onclick="interceptHack()">⚡ INTERCEPT</button>
-    <br><br>
-    <p class="sub" style="font-size:.75em;line-height:1.5;">Intercepting will immediately cut the connection and require you to change your password.</p>
+    <!-- Normal intercept section -->
+    <div id="incoming-intercept-section">
+      <div id="incoming-cost-note" style="display:none;color:var(--y);font-size:.82em;margin-bottom:12px;padding:8px;background:#1a1500;border:1px solid var(--y);border-radius:3px;"></div>
+      <button class="btn btn-danger btn-lg" id="intercept-btn" onclick="interceptHack()">⚡ INTERCEPT</button>
+      <br><br>
+      <p class="sub" style="font-size:.75em;line-height:1.5;">Intercepting cuts the connection and forces a password change.</p>
+    </div>
+    <!-- Waiting section (hacker has 10s to block) -->
+    <div id="incoming-waiting-section" style="display:none;">
+      <div style="font-family:'Orbitron',sans-serif;color:var(--y);font-size:1em;margin-bottom:10px;">INTERCEPT SENT</div>
+      <div class="sub" style="margin-bottom:6px;">Hacker has <span id="incoming-block-countdown" style="color:var(--r);font-family:'Orbitron',sans-serif;font-size:1.1em;">10</span>s to block...</div>
+      <div class="sub" style="font-size:.75em;opacity:.7;margin-top:8px;">If they don't respond in time, your intercept succeeds.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BLOCK INTERCEPT OVERLAY (hacker side) ===== -->
+<div id="overlay-block-intercept" class="">
+  <div class="block-box">
+    <div style="font-size:2.5em;margin-bottom:8px;">⚡</div>
+    <div class="block-title">INTERCEPT INCOMING!</div>
+    <p class="sub" style="margin:8px 0 4px;font-size:.85em;">Target is trying to cut your connection.</p>
+    <div class="block-countdown" id="block-countdown">10</div>
+    <p class="sub" style="font-size:.82em;margin-bottom:20px;">Block for <span class="warn-text">100 CR</span> to counter and keep hacking.<br>If you don't respond, you lose the hack.</p>
+    <button class="btn btn-warn btn-lg" id="block-btn">🛡 BLOCK (100 CR)</button>
   </div>
 </div>
 
@@ -528,16 +558,15 @@
   <div class="update-box">
     <div style="font-size:2em;margin-bottom:8px;">📡</div>
     <h2>SYSTEM UPDATE</h2>
-    <div class="update-version">v4.0 — DEPLOYED 12 JUN 2026</div>
+    <div class="update-version">v5.0 — DEPLOYED 12 JUN 2026</div>
     <ul class="update-list">
-      <li class="new">SHOP added — Multi Hack, Drop Speed, and Immunity upgrades</li>
-      <li class="new">Immunity (4000 CR) — become unhackable for 1 hour, max 2 per day</li>
-      <li class="new">Buy 2 immunities at once for 2 hours of protection</li>
-      <li class="new">Immune players show a 🛡 shield on the hack target list</li>
-      <li class="new">Multi Hack (1000 CR) — hack multiple people simultaneously</li>
-      <li class="new">Drop Speed (5000 CR) — reduce your credit drop interval by 10% each purchase</li>
+      <li class="new">Intercept Block — when someone intercepts you, you have 10s to block for 100 CR</li>
+      <li class="new">Block keeps your hack alive and pauses the timer during the window</li>
+      <li class="new">After a block, the target can intercept again but it costs them 100 CR</li>
+      <li class="new">First intercept is always free — blocks and re-intercepts each cost 100 CR</li>
+      <li class="new">You get a push notification when your intercept is blocked</li>
     </ul>
-    <p class="sub" style="font-size:.8em;margin-bottom:16px;line-height:1.5;">Tap SHOP on the dashboard to get started.</p>
+    <p class="sub" style="font-size:.8em;margin-bottom:16px;line-height:1.5;">The back-and-forth escalation continues as long as both sides keep paying.</p>
     <button class="btn btn-info btn-full" onclick="dismissUpdate(false)">GOT IT</button>
     <button class="btn btn-sm btn-full" style="margin-top:8px;opacity:.6;" onclick="dismissUpdate(true)">DON'T SHOW AGAIN</button>
   </div>
@@ -555,7 +584,7 @@ const firebaseConfig = {
 };
 const VAPID_KEY = "BK1TUpmITVbzOyMS0siUrjcXt-Wh4Wzuzc3zeQ76sQgi-8VxH-Hk69-zlcmX-hgaO8yC7ESpkaUkx7gxixdYGj8";
 
-const UPDATE_VERSION = 'v4';
+const UPDATE_VERSION = 'v5';
 
 import { initializeApp }                    from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
 import { getDatabase, ref, get, set, update, onValue, push, runTransaction }
@@ -585,6 +614,10 @@ let immunityInterval     = null;
 let revealedPw           = null;
 let infiltrateTarget     = null;
 let incomingHackId       = null;
+let myInterceptHackId    = null; // hack ID that I (as target) most recently sent an intercept for
+let pendingInterceptCost = 0;    // CR cost for current intercept (0 = free)
+let blockOverlayInterval = null; // hacker's 10s block countdown
+let targetWaitInterval   = null; // target's 10s backup expire timer
 let balanceListener      = null;
 let isNewPlayer          = false;
 
@@ -1252,66 +1285,151 @@ function setupActiveHackListener(hackId) {
   if (activeHackListener) { activeHackListener(); activeHackListener = null; }
 
   let unsubscribe;
+  let prevStatus = null;
+
   unsubscribe = onValue(ref(db, `activeHacks/${hackId}`), snap => {
     if (!snap.exists()) return;
     const hack = snap.val();
-    if (hack.status !== 'intercepted') return;
+    const status = hack.status;
+    if (status === prevStatus) return; // only react to status changes
+    const oldStatus = prevStatus;
+    prevStatus = status;
 
-    // Stop timer if hack moved to stealing state
-    const mapInfo = activeHacksMap.get(hackId);
-    if (mapInfo?.timerInterval) clearInterval(mapInfo.timerInterval);
+    if (status === 'intercepting') {
+      pauseHackTimer(hackId);
+      showBlockOverlay(hackId, hack.interceptDeadline);
 
-    // Update panel UI
-    const timerEl  = document.getElementById(`hack-timer-${hackId}`);
-    const statusEl = document.getElementById(`hack-status-${hackId}`);
-    const fillEl   = document.getElementById(`hack-fill-${hackId}`);
-    if (timerEl)  { timerEl.textContent = 'INTERCEPTED'; timerEl.className = 'hack-timer intercepted'; }
-    if (statusEl) statusEl.textContent = 'Connection severed by target.';
-    if (fillEl)   fillEl.style.background = 'var(--r)';
+    } else if (status === 'stealing' && oldStatus === 'intercepting') {
+      // Hacker successfully blocked — dismiss overlay, resume with extended endTime
+      dismissBlockOverlay();
+      restartHackTimer(hack.amount, hack.endTime, hackId);
+      showToast('🛡 Block successful! Hack continues.', 'ok', 3000);
 
-    // Clean up state
-    if (hackId === currentHackId) {
-      currentHackId = null;
-      infiltrateTarget = null;
-      resetInfiltratePanel();
-    }
-    activeHacksMap.delete(hackId);
-    if (unsubscribe) unsubscribe();
+    } else if (status === 'intercepted') {
+      dismissBlockOverlay();
+      const info = activeHacksMap.get(hackId);
+      if (info?.timerInterval) clearInterval(info.timerInterval);
 
-    setTimeout(() => {
-      const panel = document.getElementById(`hack-panel-${hackId}`);
-      if (panel) panel.remove();
-      document.getElementById('intercepted-msg').innerHTML =
-        `ERROR: YOU HAVE BEEN INTERCEPTED<br><br>` +
-        `<span class="warn-text">${hack.targetName.toUpperCase()}</span> detected your intrusion and severed the connection.<br><br>` +
-        `No credits were transferred.`;
-      const tauntEl = document.getElementById('intercepted-taunt');
-      if (hack.tauntMessage) {
-        tauntEl.style.display = 'block';
-        tauntEl.textContent   = `"${hack.tauntMessage}"`;
-      } else {
-        tauntEl.style.display = 'none';
+      const timerEl  = document.getElementById(`hack-timer-${hackId}`);
+      const statusEl = document.getElementById(`hack-status-${hackId}`);
+      const fillEl   = document.getElementById(`hack-fill-${hackId}`);
+      if (timerEl)  { timerEl.textContent = 'INTERCEPTED'; timerEl.className = 'hack-timer intercepted'; }
+      if (statusEl) statusEl.textContent = 'Connection severed by target.';
+      if (fillEl)   fillEl.style.background = 'var(--r)';
+
+      if (hackId === currentHackId) {
+        currentHackId = null;
+        infiltrateTarget = null;
+        resetInfiltratePanel();
       }
-      document.getElementById('overlay-intercepted').classList.add('visible');
-    }, 1500);
+      activeHacksMap.delete(hackId);
+      if (unsubscribe) unsubscribe();
+
+      setTimeout(() => {
+        const panel = document.getElementById(`hack-panel-${hackId}`);
+        if (panel) panel.remove();
+        document.getElementById('intercepted-msg').innerHTML =
+          `ERROR: YOU HAVE BEEN INTERCEPTED<br><br>` +
+          `<span class="warn-text">${hack.targetName.toUpperCase()}</span> detected your intrusion and severed the connection.<br><br>` +
+          `No credits were transferred.`;
+        const tauntEl = document.getElementById('intercepted-taunt');
+        if (hack.tauntMessage) {
+          tauntEl.style.display = 'block';
+          tauntEl.textContent   = `"${hack.tauntMessage}"`;
+        } else {
+          tauntEl.style.display = 'none';
+        }
+        document.getElementById('overlay-intercepted').classList.add('visible');
+      }, 1500);
+    }
   });
 
   activeHackListener = unsubscribe;
 }
 
+function pauseHackTimer(hackId) {
+  const info = activeHacksMap.get(hackId);
+  if (info?.timerInterval) {
+    clearInterval(info.timerInterval);
+    activeHacksMap.set(hackId, { ...info, timerInterval: null });
+  }
+  const timerEl  = document.getElementById(`hack-timer-${hackId}`);
+  const statusEl = document.getElementById(`hack-status-${hackId}`);
+  if (timerEl)  { timerEl.textContent = 'PAUSED'; timerEl.className = 'hack-timer'; }
+  if (statusEl) statusEl.textContent = 'Target intercepting — block or lose the hack!';
+}
+
+function showBlockOverlay(hackId, interceptDeadline) {
+  if (blockOverlayInterval) { clearInterval(blockOverlayInterval); blockOverlayInterval = null; }
+  document.getElementById('block-btn').onclick = () => blockIntercept(hackId);
+  document.getElementById('overlay-block-intercept').classList.add('visible');
+
+  const tick = async () => {
+    const secs = Math.max(0, Math.ceil((interceptDeadline - Date.now()) / 1000));
+    document.getElementById('block-countdown').textContent = secs;
+    if (secs <= 0) {
+      clearInterval(blockOverlayInterval); blockOverlayInterval = null;
+      // Auto-expire: confirm intercepted if still intercepting
+      try {
+        const snap = await get(ref(db, `activeHacks/${hackId}`));
+        if (snap.exists() && snap.val().status === 'intercepting') {
+          await update(ref(db, `activeHacks/${hackId}`), { status: 'intercepted' });
+        }
+      } catch(e) {}
+    }
+  };
+  tick();
+  blockOverlayInterval = setInterval(tick, 500);
+}
+
+function dismissBlockOverlay() {
+  if (blockOverlayInterval) { clearInterval(blockOverlayInterval); blockOverlayInterval = null; }
+  document.getElementById('overlay-block-intercept').classList.remove('visible');
+}
+
 // =====================================================================
 // INCOMING HACK LISTENER — target side
 // =====================================================================
+let lastNotifiedHackId = null;
+
 function setupIncomingHackListener() {
   if (incomingHackListener) { incomingHackListener(); incomingHackListener = null; }
   incomingHackListener = onValue(ref(db, 'activeHacks'), snap => {
-    if (!snap.exists()) {
-      if (!document.getElementById('overlay-change-pw').classList.contains('visible'))
+    const changePwVisible = document.getElementById('overlay-change-pw').classList.contains('visible');
+    const hacks = snap.exists() ? snap.val() : {};
+
+    // Handle a hack we are currently intercepting
+    if (myInterceptHackId) {
+      const h = hacks[myInterceptHackId];
+      if (!h || h.status === 'completed' || h.status === 'aborted') {
+        myInterceptHackId = null;
+        clearTargetWaitTimer();
+      } else if (h.status === 'intercepted') {
+        // Our intercept succeeded
+        myInterceptHackId = null;
+        clearTargetWaitTimer();
+        incomingHackId = null;
         document.getElementById('overlay-incoming').classList.remove('visible');
-      return;
+        if (!changePwVisible) showForcedPasswordChange();
+        return;
+      } else if (h.status === 'intercepting') {
+        // Still waiting for hacker's response — keep waiting section visible
+        showIncomingWaiting(myInterceptHackId, h.interceptDeadline);
+        return;
+      } else if (h.status === 'stealing') {
+        // Hacker blocked our intercept!
+        const blockedId = myInterceptHackId;
+        myInterceptHackId = null;
+        clearTargetWaitTimer();
+        incomingHackId = blockedId;
+        showIncomingHack({ id: blockedId, ...h }, true);
+        showToast('🛡 BLOCKED! Hacker paid 100 CR to counter. Intercept again for 100 CR.', 'warn', 6000);
+        sendPushNotification('🛡 Your intercept was blocked! Intercept again for 100 CR.');
+        return;
+      }
     }
 
-    const hacks = snap.val();
+    // Find any active hack against us (not in intercepting state which we handle above)
     let activeHack = null;
     for (const [id, hack] of Object.entries(hacks)) {
       if (hack.targetId === currentPlayer.id &&
@@ -1323,19 +1441,77 @@ function setupIncomingHackListener() {
 
     if (activeHack) {
       incomingHackId = activeHack.id;
-      document.getElementById('incoming-msg').innerHTML =
-        `<span class="err-text">${activeHack.hackerName.toUpperCase()}</span> has breached your account!` +
-        (activeHack.status === 'stealing'
-          ? `<br><br>They are stealing <span class="err-text">${activeHack.amount} CR</span> from you.`
-          : `<br><br>They are accessing your system. Not yet stealing.`);
-      document.getElementById('overlay-incoming').classList.add('visible');
-      sendPushNotification(`⚠ BREACH: ${activeHack.hackerName} is in your account!`);
+      const alreadyShowing = document.getElementById('overlay-incoming').classList.contains('visible');
+      showIncomingHack(activeHack, false);
+      if (!alreadyShowing || lastNotifiedHackId !== activeHack.id) {
+        lastNotifiedHackId = activeHack.id;
+        sendPushNotification(`⚠ BREACH: ${activeHack.hackerName} is in your account!`);
+      }
     } else {
       incomingHackId = null;
-      if (!document.getElementById('overlay-change-pw').classList.contains('visible'))
-        document.getElementById('overlay-incoming').classList.remove('visible');
+      if (!changePwVisible) document.getElementById('overlay-incoming').classList.remove('visible');
     }
   });
+}
+
+function showIncomingHack(hack, wasBlocked) {
+  const interceptCount = hack.interceptCount || 0;
+  const costNote  = document.getElementById('incoming-cost-note');
+  const btn       = document.getElementById('intercept-btn');
+  const showCost  = wasBlocked || interceptCount > 0;
+
+  if (showCost) {
+    costNote.textContent = '⚠ Intercept costs 100 CR — hacker blocked your last attempt.';
+    costNote.style.display = 'block';
+    btn.textContent = '⚡ INTERCEPT (100 CR)';
+  } else {
+    costNote.style.display = 'none';
+    btn.textContent = '⚡ INTERCEPT';
+  }
+
+  document.getElementById('incoming-intercept-section').style.display = '';
+  document.getElementById('incoming-waiting-section').style.display   = 'none';
+  document.getElementById('incoming-icon').textContent  = '⚠';
+  document.getElementById('incoming-title').textContent = 'BREACH DETECTED';
+  document.getElementById('incoming-msg').innerHTML =
+    `<span class="err-text">${hack.hackerName.toUpperCase()}</span> has breached your account!` +
+    (hack.status === 'stealing'
+      ? `<br><br>They are stealing <span class="err-text">${hack.amount} CR</span> from you.`
+      : `<br><br>They are accessing your system. Not yet stealing.`);
+  document.getElementById('overlay-incoming').classList.add('visible');
+}
+
+function showIncomingWaiting(hackId, interceptDeadline) {
+  document.getElementById('incoming-intercept-section').style.display = 'none';
+  document.getElementById('incoming-waiting-section').style.display   = '';
+  document.getElementById('overlay-incoming').classList.add('visible');
+
+  if (targetWaitInterval) return; // already counting
+  targetWaitInterval = setInterval(async () => {
+    const secs = Math.max(0, Math.ceil((interceptDeadline - Date.now()) / 1000));
+    const el = document.getElementById('incoming-block-countdown');
+    if (el) el.textContent = secs;
+    if (secs <= 0) {
+      clearTargetWaitTimer();
+      try {
+        const snap = await get(ref(db, `activeHacks/${hackId}`));
+        if (snap.exists() && snap.val().status === 'intercepting') {
+          await update(ref(db, `activeHacks/${hackId}`), { status: 'intercepted' });
+        }
+      } catch(e) {}
+    }
+  }, 500);
+}
+
+function clearTargetWaitTimer() {
+  if (targetWaitInterval) { clearInterval(targetWaitInterval); targetWaitInterval = null; }
+}
+
+function showForcedPasswordChange() {
+  document.getElementById('forced-pw-input').value   = '';
+  document.getElementById('forced-pw-confirm').value = '';
+  document.getElementById('forced-pw-error').textContent = '';
+  document.getElementById('overlay-change-pw').classList.add('visible');
 }
 
 // =====================================================================
@@ -1455,9 +1631,27 @@ let pendingInterceptHackId = null;
 
 async function interceptHackWithTaunt() {
   if (!incomingHackId) return;
+
+  // Check how many times this hack has been intercepted already
+  let interceptCount = 0;
+  try {
+    const snap = await get(ref(db, `activeHacks/${incomingHackId}/interceptCount`));
+    interceptCount = snap.exists() ? (snap.val() || 0) : 0;
+  } catch(e) {}
+
+  pendingInterceptCost   = interceptCount > 0 ? 100 : 0;
   pendingInterceptHackId = incomingHackId;
-  incomingHackId = null;
+  incomingHackId         = null;
   document.getElementById('overlay-incoming').classList.remove('visible');
+
+  const costNote = document.getElementById('intercept-cost-note');
+  if (pendingInterceptCost > 0) {
+    costNote.textContent = `⚠ This intercept costs ${pendingInterceptCost} CR (hacker blocked your last attempt).`;
+    costNote.style.display = 'block';
+  } else {
+    costNote.style.display = 'none';
+  }
+
   document.getElementById('intercept-taunt-input').value = '';
   document.getElementById('overlay-intercept-msg').classList.add('visible');
 }
@@ -1466,19 +1660,75 @@ async function sendInterceptTaunt(skip = false) {
   const taunt = skip ? '' : document.getElementById('intercept-taunt-input').value.trim();
   document.getElementById('overlay-intercept-msg').classList.remove('visible');
 
+  // Deduct cost for non-free intercepts
+  if (pendingInterceptCost > 0) {
+    const result = await runTransaction(ref(db, `players/${currentPlayer.id}/balance`), bal => {
+      if (bal === null || bal < pendingInterceptCost) return; // abort
+      return bal - pendingInterceptCost;
+    });
+    if (!result.committed) {
+      showToast(`Need ${pendingInterceptCost} CR to intercept.`, 'err');
+      // Restore state so they can try again
+      incomingHackId = pendingInterceptHackId;
+      pendingInterceptHackId = null;
+      pendingInterceptCost   = 0;
+      try {
+        const snap = await get(ref(db, `activeHacks/${incomingHackId}`));
+        if (snap.exists()) showIncomingHack({ id: incomingHackId, ...snap.val() }, true);
+      } catch(e) {}
+      return;
+    }
+  }
+
   try {
-    const updates = { status: 'intercepted' };
+    const hackSnap = await get(ref(db, `activeHacks/${pendingInterceptHackId}`));
+    if (!hackSnap.exists()) { pendingInterceptHackId = null; pendingInterceptCost = 0; return; }
+    const currentCount      = hackSnap.val().interceptCount || 0;
+    const interceptDeadline = Date.now() + 10000;
+    const updates = {
+      status:           'intercepting',
+      interceptCount:   currentCount + 1,
+      interceptDeadline,
+      interceptStartTime: Date.now(),
+    };
     if (taunt) updates.tauntMessage = taunt;
     await update(ref(db, `activeHacks/${pendingInterceptHackId}`), updates);
+    myInterceptHackId = pendingInterceptHackId;
+    // Show waiting state immediately
+    showIncomingWaiting(myInterceptHackId, interceptDeadline);
   } catch(e) { console.error(e); }
 
   pendingInterceptHackId = null;
-  document.getElementById('forced-pw-input').value   = '';
-  document.getElementById('forced-pw-confirm').value = '';
-  document.getElementById('forced-pw-error').textContent = '';
-  document.getElementById('overlay-change-pw').classList.add('visible');
+  pendingInterceptCost   = 0;
+  // overlay-change-pw is shown by incomingHackListener when status becomes 'intercepted'
 }
 window.sendInterceptTaunt = sendInterceptTaunt;
+
+// =====================================================================
+// BLOCK INTERCEPT — hacker pays 100 CR to cancel an intercept
+// =====================================================================
+async function blockIntercept(hackId) {
+  const result = await runTransaction(ref(db, `players/${currentPlayer.id}/balance`), bal => {
+    if (bal === null || bal < 100) return; // abort — not enough credits
+    return bal - 100;
+  });
+  if (!result.committed) { showToast('Need 100 CR to block.', 'err'); return; }
+
+  try {
+    const snap = await get(ref(db, `activeHacks/${hackId}`));
+    if (!snap.exists()) { showToast('Hack no longer active.', 'warn'); return; }
+    const hack = snap.val();
+    if (hack.status !== 'intercepting') { showToast('Too late to block.', 'warn'); return; }
+
+    const pausedMs = Date.now() - hack.interceptStartTime;
+    await update(ref(db, `activeHacks/${hackId}`), {
+      status:  'stealing',
+      endTime: hack.endTime + pausedMs,
+    });
+    dismissBlockOverlay();
+  } catch(e) { showToast('Block failed.', 'err'); }
+}
+window.blockIntercept = blockIntercept;
 
 // =====================================================================
 // CHANGE PIN
@@ -1667,6 +1917,9 @@ async function logout() {
   if (immunityInterval)     { clearInterval(immunityInterval); immunityInterval = null; }
   if (activeHackListener)   { activeHackListener(); activeHackListener = null; }
   if (incomingHackListener) { incomingHackListener(); incomingHackListener = null; }
+  dismissBlockOverlay();
+  clearTargetWaitTimer();
+  myInterceptHackId = null; pendingInterceptCost = 0; lastNotifiedHackId = null;
   if (balanceListener)      { balanceListener(); balanceListener = null; }
   if (chatListener)         { chatListener(); chatListener = null; }
 
