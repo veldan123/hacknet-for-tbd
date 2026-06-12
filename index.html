@@ -185,6 +185,17 @@
     .lb-row.lb-top{border-color:#ffd70044;background:#0d130a;}
     ::-webkit-scrollbar{width:6px;background:var(--bg);}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    /* SPIN WHEEL OVERLAY */
+    #overlay-wheel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.96);z-index:510;align-items:center;justify-content:center;overflow-y:auto;}
+    #overlay-wheel.visible{display:flex;animation:fadeIn .3s ease;}
+    .wheel-box{background:var(--panel);border:2px solid var(--y);border-radius:8px;padding:24px 16px 20px;max-width:340px;width:93%;text-align:center;}
+    .wheel-title{font-family:'Orbitron',sans-serif;color:var(--y);font-size:1.1em;margin-bottom:4px;text-shadow:0 0 12px var(--y);}
+    .wheel-subtitle{font-size:.78em;color:var(--dim);margin-bottom:14px;}
+    .wheel-wrap{position:relative;display:inline-block;margin:0 auto 10px;}
+    .wheel-ptr{position:absolute;top:-18px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:10px solid transparent;border-right:10px solid transparent;border-top:20px solid var(--y);filter:drop-shadow(0 0 6px var(--y));z-index:2;}
+    #wheel-canvas{display:block;border-radius:50%;box-shadow:0 0 24px rgba(255,204,0,.35);}
+    #wheel-spins-left{font-size:.78em;color:var(--dim);margin:6px 0 10px;}
+    #wheel-result{font-size:1.2em;font-family:'Orbitron',sans-serif;color:var(--g);margin:4px 0 10px;text-shadow:0 0 12px var(--g);display:none;animation:fadeIn .4s ease;}
     /* BLOCK INTERCEPT OVERLAY */
     #overlay-block-intercept{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.9);z-index:520;align-items:center;justify-content:center;}
     #overlay-block-intercept.visible{display:flex;animation:fadeIn .3s ease;}
@@ -295,6 +306,7 @@
       <button class="btn btn-info btn-full" onclick="goToChangePassword()">🔑 CHANGE PASSWORD</button>
       <button class="btn btn-full" style="border-color:#ff8c00;color:#ff8c00;" onclick="openShop()">🛒 SHOP<br><span style="font-size:.7em;opacity:.7">UPGRADES</span></button>
       <button class="btn btn-full" onclick="showScreen('change-pin')">🔐 CHANGE PIN</button>
+      <button class="btn btn-full" style="border-color:#e91e63;color:#e91e63;grid-column:1/-1;" onclick="openWheel()">🎡 WHEEL OF FORTUNE<br><span style="font-size:.7em;opacity:.7">500 CR · MAX 50/DAY</span></button>
       <div class="chat-btn-wrap" style="grid-column:1/-1;">
         <button class="btn btn-full" style="border-color:var(--y);color:var(--y);" onclick="showScreen('chat')">💬 GROUP CHAT</button>
         <div class="chat-unread" id="chat-unread" style="display:none;">0</div>
@@ -512,6 +524,22 @@
 </div>
 
 <!-- ===== BLOCK INTERCEPT OVERLAY (hacker side) ===== -->
+<!-- ===== SPIN WHEEL OVERLAY ===== -->
+<div id="overlay-wheel" class="">
+  <div class="wheel-box">
+    <div class="wheel-title">🎡 WHEEL OF FORTUNE</div>
+    <div class="wheel-subtitle">500 CR per spin · Max 50/day</div>
+    <div class="wheel-wrap">
+      <div class="wheel-ptr"></div>
+      <canvas id="wheel-canvas" width="270" height="270"></canvas>
+    </div>
+    <div id="wheel-result"></div>
+    <div id="wheel-spins-left"></div>
+    <button class="btn btn-warn btn-lg btn-full" id="spin-btn" onclick="spinWheel()">🎡 SPIN (500 CR)</button>
+    <button class="btn btn-sm btn-full" style="margin-top:8px;opacity:.55;" onclick="closeWheel()">CLOSE</button>
+  </div>
+</div>
+
 <div id="overlay-block-intercept" class="">
   <div class="block-box">
     <div style="font-size:2.5em;margin-bottom:8px;">⚡</div>
@@ -1994,6 +2022,161 @@ function showToast(msg, type = 'ok', duration = 3000) {
   toastTimeout = setTimeout(() => el.className = '', duration);
 }
 window.showToast = showToast;
+
+// =====================================================================
+// WHEEL OF FORTUNE
+// =====================================================================
+const WHEEL_PRIZES = [100, 300, 500, 800, 1000, 2000, 3000, 5000];
+const WHEEL_COLORS = ['#c0392b','#d35400','#f39c12','#27ae60','#16a085','#2471a3','#6c3483','#b03a2e'];
+const SPIN_COST    = 500;
+const MAX_SPINS    = 50;
+const SEG_DEG      = 360 / WHEEL_PRIZES.length; // 45°
+
+let wheelAngle    = 0;
+let wheelSpinning = false;
+
+function drawWheelCanvas() {
+  const canvas = document.getElementById('wheel-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const cx = 135, cy = 135, r = 128;
+  const n = WHEEL_PRIZES.length;
+  const segRad = (2 * Math.PI) / n;
+  ctx.clearRect(0, 0, 270, 270);
+
+  for (let i = 0; i < n; i++) {
+    const start = i * segRad - Math.PI / 2;
+    const end   = start + segRad;
+
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.arc(cx, cy, r, start, end);
+    ctx.closePath();
+    ctx.fillStyle = WHEEL_COLORS[i];
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(0,0,0,.5)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // label
+    const mid = start + segRad / 2;
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(mid);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 11px "Orbitron",monospace';
+    ctx.shadowColor = 'rgba(0,0,0,.9)';
+    ctx.shadowBlur = 4;
+    const label = WHEEL_PRIZES[i] >= 1000
+      ? `${WHEEL_PRIZES[i] / 1000}K CR`
+      : `${WHEEL_PRIZES[i]} CR`;
+    ctx.fillText(label, r - 9, 4);
+    ctx.restore();
+  }
+
+  // outer ring
+  ctx.beginPath();
+  ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.strokeStyle = '#ffd700';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+
+  // centre cap
+  ctx.beginPath();
+  ctx.arc(cx, cy, 16, 0, Math.PI * 2);
+  ctx.fillStyle = '#060906';
+  ctx.fill();
+  ctx.strokeStyle = '#ffd700';
+  ctx.lineWidth = 3;
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.arc(cx, cy, 5, 0, Math.PI * 2);
+  ctx.fillStyle = '#ffd700';
+  ctx.fill();
+}
+
+async function openWheel() {
+  const canvas = document.getElementById('wheel-canvas');
+  canvas.style.transition = 'none';
+  canvas.style.transform  = `rotate(${wheelAngle % 360}deg)`;
+  wheelAngle = wheelAngle % 360;
+  drawWheelCanvas();
+  document.getElementById('wheel-result').style.display = 'none';
+  document.getElementById('overlay-wheel').classList.add('visible');
+  await refreshWheelSpins();
+}
+window.openWheel = openWheel;
+
+function closeWheel() {
+  document.getElementById('overlay-wheel').classList.remove('visible');
+}
+window.closeWheel = closeWheel;
+
+async function refreshWheelSpins() {
+  const sgDate = new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10);
+  const snap = await get(ref(db, `players/${currentPlayer.id}/wheelSpins`));
+  const d = snap.exists() ? snap.val() : {};
+  const used = (d.date === sgDate) ? (d.count || 0) : 0;
+  document.getElementById('wheel-spins-left').textContent =
+    `${MAX_SPINS - used} spins remaining today`;
+  return { used, sgDate };
+}
+
+async function spinWheel() {
+  if (wheelSpinning) return;
+
+  const { used, sgDate } = await refreshWheelSpins();
+  if (used >= MAX_SPINS) { showToast('Max 50 spins/day reached.', 'warn'); return; }
+
+  // Deduct spin cost
+  const costResult = await runTransaction(ref(db, `players/${currentPlayer.id}/balance`), bal => {
+    if (bal === null || bal < SPIN_COST) return;
+    return bal - SPIN_COST;
+  });
+  if (!costResult.committed) { showToast(`Need ${SPIN_COST} CR to spin.`, 'err'); return; }
+
+  // Random prize
+  const idx   = Math.floor(Math.random() * WHEEL_PRIZES.length);
+  const prize = WHEEL_PRIZES[idx];
+
+  // Increment spin count
+  await update(ref(db, `players/${currentPlayer.id}/wheelSpins`), { date: sgDate, count: used + 1 });
+
+  // Calc target angle: segment idx centre must reach the top pointer
+  // Centre of segment idx (at rotation 0) = idx*45 + 22.5° clockwise from top
+  // To align it with the pointer: wheelAngle ≡ -(idx*45 + 22.5) mod 360
+  const finalMod = ((360 - (idx * SEG_DEG + SEG_DEG / 2)) % 360 + 360) % 360;
+  const curMod   = ((wheelAngle % 360) + 360) % 360;
+  let   diff     = ((finalMod - curMod) + 360) % 360;
+  if (diff === 0) diff = 360;
+  wheelAngle = wheelAngle + 5 * 360 + diff;
+
+  // Animate
+  wheelSpinning = true;
+  const btn = document.getElementById('spin-btn');
+  btn.disabled = true;
+  document.getElementById('wheel-result').style.display = 'none';
+
+  const canvas = document.getElementById('wheel-canvas');
+  canvas.style.transition = 'transform 4s cubic-bezier(0.17,0.67,0.12,0.99)';
+  canvas.style.transform  = `rotate(${wheelAngle}deg)`;
+
+  setTimeout(async () => {
+    // Award prize
+    await runTransaction(ref(db, `players/${currentPlayer.id}/balance`), bal => (bal || 0) + prize);
+
+    const resultEl = document.getElementById('wheel-result');
+    resultEl.innerHTML = `🎉 +${prize.toLocaleString()} CR!`;
+    resultEl.style.display = 'block';
+    showToast(`🎡 You won ${prize.toLocaleString()} CR!`, 'ok', 4000);
+
+    wheelSpinning = false;
+    btn.disabled  = false;
+    await refreshWheelSpins();
+  }, 4300);
+}
+window.spinWheel = spinWheel;
 </script>
 </body>
 </html>
