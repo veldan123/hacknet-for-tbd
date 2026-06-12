@@ -1429,6 +1429,20 @@ function setupIncomingHackListener() {
       }
     }
 
+    // ── Hacker side: show block overlay if any of our hacks are intercepting ──
+    let ourInterceptingId = null;
+    for (const [id, hack] of Object.entries(hacks)) {
+      if (hack.hackerId === currentPlayer.id && hack.status === 'intercepting') {
+        ourInterceptingId = id; break;
+      }
+    }
+    const blockEl = document.getElementById('overlay-block-intercept');
+    if (ourInterceptingId && !blockEl.classList.contains('visible')) {
+      showBlockOverlay(ourInterceptingId, hacks[ourInterceptingId].interceptDeadline);
+    } else if (!ourInterceptingId && blockEl.classList.contains('visible')) {
+      dismissBlockOverlay();
+    }
+
     // Find any active hack against us (not in intercepting state which we handle above)
     let activeHack = null;
     for (const [id, hack] of Object.entries(hacks)) {
