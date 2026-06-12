@@ -516,10 +516,11 @@ async function selectPlayer(player) {
   if (hasPin) {
     newMsg.style.display     = 'none';
     pinConfGrp.style.display = 'none';
-    pwGrp.style.display      = 'none';
+    pwGrp.style.display      = 'block';
     pwConfGrp.style.display  = 'none';
     pinLabel.textContent     = 'PIN';
-    loginSub.textContent     = 'Enter your PIN to access your account.';
+    document.getElementById('login-pw-group').querySelector('label').textContent = 'HACK PASSWORD';
+    loginSub.textContent     = 'Enter your PIN and hack password to access your account.';
     forgotLink.style.display = 'block';
   } else {
     newMsg.style.display     = 'block';
@@ -569,11 +570,12 @@ async function handleLogin() {
       });
       showToast('Account created! Balance: 1000 CR', 'ok', 3000);
     } else {
-      const snap = await get(ref(db, `players/${currentPlayer.id}/pin`));
-      if (!snap.exists() || snap.val() !== pin) {
-        errEl.textContent = '⚠ ACCESS DENIED — Incorrect PIN.';
-        return;
-      }
+      const snap = await get(ref(db, `players/${currentPlayer.id}`));
+      if (!snap.exists()) { errEl.textContent = 'Account not found.'; return; }
+      const data = snap.val();
+      const pw   = document.getElementById('login-pw-input').value.trim();
+      if (data.pin !== pin)          { errEl.textContent = '⚠ ACCESS DENIED — Incorrect PIN.'; return; }
+      if (!pw || data.password !== pw){ errEl.textContent = '⚠ ACCESS DENIED — Incorrect password.'; return; }
     }
   } catch(e) {
     errEl.textContent = 'Connection error.';
