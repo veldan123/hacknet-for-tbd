@@ -144,6 +144,18 @@
     .back-btn:hover{color:var(--g);}
     .glitch{animation:glitch 3s infinite;}
     @keyframes glitch{0%,90%,100%{clip-path:none;transform:none}92%{clip-path:rect(20px,9999px,30px,0);transform:skewX(-3deg)}94%{clip-path:rect(60px,9999px,70px,0);transform:skewX(2deg)}96%{clip-path:rect(10px,9999px,20px,0);transform:skewX(-1deg)}}
+    /* LEADERBOARD */
+    #leaderboard{width:100%;max-width:500px;}
+    .lb-row{display:flex;align-items:center;gap:12px;padding:10px 16px;margin:4px 0;background:var(--panel);border:1px solid var(--border);border-radius:4px;transition:all .2s;}
+    .lb-rank{font-family:'Orbitron',sans-serif;font-size:1.1em;width:32px;text-align:center;}
+    .lb-rank.r1{color:#ffd700;text-shadow:0 0 10px #ffd700;}
+    .lb-rank.r2{color:#c0c0c0;text-shadow:0 0 8px #c0c0c0;}
+    .lb-rank.r3{color:#cd7f32;text-shadow:0 0 8px #cd7f32;}
+    .lb-rank.r4{color:var(--g2);}
+    .lb-avatar{font-size:1.4em;}
+    .lb-name{font-family:'Orbitron',sans-serif;font-size:.8em;letter-spacing:1px;flex:1;text-align:left;}
+    .lb-bal{font-family:'Orbitron',sans-serif;font-size:.9em;color:var(--g);text-shadow:0 0 6px var(--g);}
+    .lb-row.lb-top{border-color:#ffd70044;background:#0d130a;}
     ::-webkit-scrollbar{width:6px;background:var(--bg);}
     ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
   </style>
@@ -156,6 +168,7 @@
 <div id="screen-landing" class="screen active">
   <h1 class="logo glitch">HACKNET</h1>
   <p class="logo-sub">SELECT OPERATOR</p>
+  <div id="leaderboard" style="width:100%;max-width:500px;margin-bottom:28px;"></div>
   <div class="player-grid" id="player-grid"></div>
 </div>
 
@@ -469,9 +482,36 @@ try { messaging = getMessaging(app); } catch(e) {}
 
 window.addEventListener('load', () => {
   buildLandingGrid();
+  loadLeaderboard();
   requestNotifPermission();
   checkUpdatePopup();
 });
+
+// =====================================================================
+// LEADERBOARD
+// =====================================================================
+function loadLeaderboard() {
+  const MEDALS = ['🥇','🥈','🥉','4️⃣'];
+  const RANK_CLASS = ['r1','r2','r3','r4'];
+  onValue(ref(db, 'players'), snap => {
+    const lb = document.getElementById('leaderboard');
+    if (!lb) return;
+    if (!snap.exists()) { lb.innerHTML = ''; return; }
+    const data = snap.val();
+    const sorted = PLAYERS
+      .map(p => ({ ...p, balance: data[p.id]?.balance ?? 0 }))
+      .sort((a, b) => b.balance - a.balance);
+
+    lb.innerHTML = `<div style="font-size:.65em;color:var(--g2);letter-spacing:4px;margin-bottom:8px;text-align:center;">◆ LEADERBOARD ◆</div>` +
+      sorted.map((p, i) => `
+        <div class="lb-row ${i === 0 ? 'lb-top' : ''}">
+          <div class="lb-rank ${RANK_CLASS[i]}">${MEDALS[i]}</div>
+          <div class="lb-avatar">${p.avatar}</div>
+          <div class="lb-name">${p.name.toUpperCase()}</div>
+          <div class="lb-bal">${p.balance.toLocaleString()} CR</div>
+        </div>`).join('');
+  });
+}
 
 // When app comes back to foreground, re-sync any active hack timer
 document.addEventListener('visibilitychange', async () => {
