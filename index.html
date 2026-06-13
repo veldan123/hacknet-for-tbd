@@ -513,6 +513,7 @@
       <button class="btn btn-danger btn-lg" id="intercept-btn" onclick="interceptHack()">⚡ INTERCEPT</button>
       <br><br>
       <p class="sub" style="font-size:.75em;line-height:1.5;">Intercepting cuts the connection and forces a password change.</p>
+      <button class="btn btn-sm" style="margin-top:10px;opacity:.5;width:100%;" onclick="dismissIncoming()">✕ IGNORE (let them hack)</button>
     </div>
     <!-- Waiting section (hacker has 10s to block) -->
     <div id="incoming-waiting-section" style="display:none;">
@@ -1565,6 +1566,12 @@ async function interceptHack() {
   await interceptHackWithTaunt();
 }
 window.interceptHack = interceptHack;
+
+function dismissIncoming() {
+  incomingHackId = null;
+  document.getElementById('overlay-incoming').classList.remove('visible');
+}
+window.dismissIncoming = dismissIncoming;
 
 async function saveForcedPassword() {
   const pw      = document.getElementById('forced-pw-input').value.trim();
