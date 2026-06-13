@@ -930,50 +930,75 @@ async function checkHourlyBonus() {
     const dropLevel = data.dropLevel || 0;
     const effectiveHourlyMs = HOURLY_MS * Math.pow(0.9, dropLevel);
     const now = Date.now();
-    const elapsed = now - (data.lastBonusTime || now);
+    if (!data.lastBonusTime) {
+      await update(ref(db, `players/${currentPlayer.id}`), { lastBonusTime: now });
+      return;
+    }
+    const elapsed = now - data.lastBonusTime;
     const cyclesEarned = Math.floor(elapsed / effectiveHourlyMs);
     if (cyclesEarned > 0) {
       const bonus = cyclesEarned * HOURLY_BONUS;
+      const newLastBonusTime = data.lastBonusTime + cyclesEarned * effectiveHourlyMs;
       await update(ref(db, `players/${currentPlayer.id}`), {
         balance:       (data.balance || 0) + bonus,
-        lastBonusTime: data.lastBonusTime + cyclesEarned * effectiveHourlyMs,
+        lastBonusTime: newLastBonusTime,
       });
       showToast(`+${bonus} CR — ${cyclesEarned}× bonus!`, 'ok', 4000);
     }
-  } catch(e) {}
+  } catch(e) { console.error('checkHourlyBonus error:', e); }
 }
 
 async function startBonusCountdown() {
   if (bonusTimerInterval) clearInterval(bonusTimerInterval);
-  let lastBonusTimeCache = null;
-  let effectiveHourlyMs = HOURLY_MS;
+  bonusTimerInterval = null;
 
+  // Read current state fresh from Firebase
+  let lastBonusTime, effectiveHourlyMs;
   try {
-    const snap = await get(ref(db, `players/${currentPlayer.id}/dropLevel`));
-    effectiveHourlyMs = HOURLY_MS * Math.pow(0.9, snap.exists() ? (snap.val() || 0) : 0);
-  } catch(e) {}
+    const snap = await get(ref(db, `players/${currentPlayer.id}`));
+    if (!snap.exists()) return;
+    const data = snap.val();
+    const dropLevel = data.dropLevel || 0;
+    effectiveHourlyMs = HOURLY_MS * Math.pow(0.9, dropLevel);
+    if (!data.lastBonusTime) {
+      // No lastBonusTime — initialise it and start a fresh cycle
+      await update(ref(db, `players/${currentPlayer.id}`), { lastBonusTime: Date.now() });
+      lastBonusTime = Date.now();
+    } else {
+      lastBonusTime = data.lastBonusTime;
+    }
+  } catch(e) {
+    console.error('startBonusCountdown init error:', e);
+    return;
+  }
 
-  const tick = async () => {
+  // Award any missed cycles immediately before starting the timer
+  const now = Date.now();
+  const elapsed = now - lastBonusTime;
+  const cyclesEarned = Math.floor(elapsed / effectiveHourlyMs);
+  if (cyclesEarned > 0) {
+    await checkHourlyBonus();
+    // Re-read lastBonusTime after awarding
     try {
-      if (lastBonusTimeCache === null) {
-        const snap = await get(ref(db, `players/${currentPlayer.id}/lastBonusTime`));
-        if (!snap.exists()) return;
-        lastBonusTimeCache = snap.val();
-      }
-      const remaining = (lastBonusTimeCache + effectiveHourlyMs) - Date.now();
-      if (remaining <= 0) {
-        clearInterval(bonusTimerInterval);
-        bonusTimerInterval = null;
-        lastBonusTimeCache = null;
-        await checkHourlyBonus();
-        startBonusCountdown();
-        return;
-      }
-      const m = Math.floor(remaining / 60000);
-      const s = Math.floor((remaining % 60000) / 1000);
-      document.getElementById('bonus-timer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-      document.getElementById('bonus-fill').style.width = (100 - remaining / effectiveHourlyMs * 100) + '%';
+      const s2 = await get(ref(db, `players/${currentPlayer.id}/lastBonusTime`));
+      if (s2.exists()) lastBonusTime = s2.val();
     } catch(e) {}
+  }
+
+  const tick = () => {
+    const remaining = (lastBonusTime + effectiveHourlyMs) - Date.now();
+    if (remaining <= 0) {
+      clearInterval(bonusTimerInterval);
+      bonusTimerInterval = null;
+      checkHourlyBonus().then(() => startBonusCountdown());
+      return;
+    }
+    const m = Math.floor(remaining / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+    const el = document.getElementById('bonus-timer');
+    const fill = document.getElementById('bonus-fill');
+    if (el) el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (fill) fill.style.width = (100 - remaining / effectiveHourlyMs * 100) + '%';
   };
   tick();
   bonusTimerInterval = setInterval(tick, 1000);
