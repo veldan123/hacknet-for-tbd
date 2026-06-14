@@ -188,6 +188,34 @@
     /* SPIN WHEEL OVERLAY */
     #overlay-wheel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.96);z-index:510;align-items:center;justify-content:center;overflow-y:auto;}
     #overlay-wheel.visible{display:flex;animation:fadeIn .3s ease;}
+    /* BLACK MARKET OVERLAY */
+    #overlay-market{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.97);z-index:510;flex-direction:column;overflow-y:auto;}
+    #overlay-market.visible{display:flex;animation:fadeIn .3s ease;}
+    .market-header{display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px;border-bottom:1px solid #ff8c0044;flex-shrink:0;}
+    .market-title{font-family:'Orbitron',sans-serif;color:#ff8c00;font-size:1.05em;text-shadow:0 0 10px #ff8c00;}
+    .market-subtitle{font-size:.75em;color:var(--dim);margin-top:2px;}
+    .market-portfolio{padding:10px 16px;background:#0a0e0a;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
+    .market-portfolio-label{font-size:.72em;color:var(--dim);}
+    .market-portfolio-val{font-size:.95em;color:var(--g);font-weight:bold;}
+    .market-table{flex:1;padding:10px 12px 80px;}
+    .market-row{background:var(--panel);border:1px solid var(--border);border-radius:6px;margin-bottom:8px;padding:10px 12px;}
+    .market-row-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+    .market-name{font-size:.88em;color:#ff8c00;font-weight:bold;}
+    .market-price{font-size:1em;color:var(--g);font-weight:bold;}
+    .market-change{font-size:.78em;font-weight:bold;margin-left:6px;}
+    .market-change.up{color:var(--g);}
+    .market-change.down{color:var(--r);}
+    .market-row-bot{display:flex;gap:8px;align-items:center;}
+    .market-held{font-size:.75em;color:var(--dim);flex:1;}
+    .market-qty{width:52px;background:var(--bg);border:1px solid var(--border);color:var(--fg);padding:4px 6px;border-radius:4px;font-size:.82em;text-align:center;}
+    .market-btn{padding:4px 10px;font-size:.75em;border-radius:4px;cursor:pointer;border:1px solid;font-family:'Share Tech Mono',monospace;}
+    .market-buy{border-color:var(--g);color:var(--g);background:transparent;}
+    .market-buy:hover{background:#0d2a0d;}
+    .market-sell{border-color:var(--r);color:var(--r);background:transparent;}
+    .market-sell:hover{background:#2a0d0d;}
+    .market-timer{font-size:.72em;color:var(--dim);text-align:center;padding:8px 0 4px;}
+    .sparkline{display:flex;gap:2px;align-items:flex-end;height:22px;margin-top:4px;}
+    .spark-bar{width:5px;border-radius:1px 1px 0 0;min-height:2px;}
     .wheel-box{background:var(--panel);border:2px solid var(--y);border-radius:8px;padding:24px 16px 20px;max-width:340px;width:93%;text-align:center;}
     .wheel-title{font-family:'Orbitron',sans-serif;color:var(--y);font-size:1.1em;margin-bottom:4px;text-shadow:0 0 12px var(--y);}
     .wheel-subtitle{font-size:.78em;color:var(--dim);margin-bottom:14px;}
@@ -307,6 +335,7 @@
       <button class="btn btn-full" style="border-color:#ff8c00;color:#ff8c00;" onclick="openShop()">🛒 SHOP<br><span style="font-size:.7em;opacity:.7">UPGRADES</span></button>
       <button class="btn btn-full" onclick="showScreen('change-pin')">🔐 CHANGE PIN</button>
       <button class="btn btn-full" style="border-color:#e91e63;color:#e91e63;grid-column:1/-1;" onclick="openWheel()">🎡 WHEEL OF FORTUNE<br><span style="font-size:.7em;opacity:.7">1000 CR · MAX 50/DAY</span></button>
+      <button class="btn btn-full" style="border-color:#ff8c00;color:#ff8c00;grid-column:1/-1;" onclick="openMarket()">🏪 BLACK MARKET<br><span style="font-size:.7em;opacity:.7">TRADE HACKED DATA</span></button>
       <div class="chat-btn-wrap" style="grid-column:1/-1;">
         <button class="btn btn-full" style="border-color:var(--y);color:var(--y);" onclick="showScreen('chat')">💬 GROUP CHAT</button>
         <div class="chat-unread" id="chat-unread" style="display:none;">0</div>
@@ -560,6 +589,25 @@
     <div class="int-msg" id="intercepted-msg">ERROR: YOU HAVE BEEN INTERCEPTED</div>
     <div id="intercepted-taunt" style="display:none;background:#1a0a0a;border:1px solid var(--r);border-radius:4px;padding:12px 16px;margin-bottom:16px;font-size:.95em;color:var(--y);font-style:italic;"></div>
     <button class="btn btn-lg" onclick="dismissIntercepted()">ACKNOWLEDGE</button>
+  </div>
+</div>
+
+<!-- ===== BLACK MARKET OVERLAY ===== -->
+<div id="overlay-market">
+  <div class="market-header">
+    <div>
+      <div class="market-title">🏪 BLACK MARKET</div>
+      <div class="market-subtitle">Prices update every 5 min · Buy low, sell high</div>
+    </div>
+    <button class="btn btn-sm" onclick="closeMarket()">✕ CLOSE</button>
+  </div>
+  <div class="market-portfolio">
+    <div><div class="market-portfolio-label">WALLET</div><div class="market-portfolio-val" id="mkt-wallet">—</div></div>
+    <div><div class="market-portfolio-label">PORTFOLIO VALUE</div><div class="market-portfolio-val" id="mkt-portval">—</div></div>
+    <div style="margin-left:auto;"><div class="market-timer" id="mkt-timer">Next update: —</div></div>
+  </div>
+  <div class="market-table" id="mkt-table">
+    <div style="color:var(--dim);text-align:center;padding:40px 0;">Loading market data…</div>
   </div>
 </div>
 
@@ -2216,6 +2264,177 @@ async function spinWheel() {
   }, 4300);
 }
 window.spinWheel = spinWheel;
+
+// =====================================================================
+// BLACK MARKET
+// =====================================================================
+const MARKET_COMMODITIES = [
+  { id: 'creditDumps',   name: 'Credit Dumps',    icon: '💳', base: 200  },
+  { id: 'idPackages',    name: 'ID Packages',      icon: '🪪', base: 150  },
+  { id: 'corpSecrets',   name: 'Corp Secrets',     icon: '🏢', base: 800  },
+  { id: 'cryptoKeys',    name: 'Crypto Keys',      icon: '🔑', base: 500  },
+  { id: 'zeroDays',      name: 'Zero-Days',        icon: '💣', base: 2000 },
+  { id: 'darkContracts', name: 'Dark Contracts',   icon: '📜', base: 1200 },
+  { id: 'biometrics',    name: 'Biometric Data',   icon: '🧬', base: 650  },
+  { id: 'govFiles',      name: 'Gov Files',        icon: '🗃️',  base: 1800 },
+];
+const MARKET_UPDATE_INTERVAL = 5 * 60 * 1000; // 5 min
+
+let marketUnsubscribe = null;
+let marketTimerInterval = null;
+let marketPrices = {};     // { id: { price, prevPrice, history } }
+let marketInventory = {};  // { id: qty }
+
+function openMarket() {
+  document.getElementById('overlay-market').classList.add('visible');
+  subscribeMarket();
+}
+window.openMarket = openMarket;
+
+function closeMarket() {
+  document.getElementById('overlay-market').classList.remove('visible');
+  if (marketUnsubscribe) { marketUnsubscribe(); marketUnsubscribe = null; }
+  if (marketTimerInterval) { clearInterval(marketTimerInterval); marketTimerInterval = null; }
+}
+window.closeMarket = closeMarket;
+
+function subscribeMarket() {
+  if (marketUnsubscribe) marketUnsubscribe();
+  const marketRef = ref(db, 'market');
+  marketUnsubscribe = onValue(marketRef, snap => {
+    const data = snap.val() || {};
+    marketPrices = {};
+    for (const c of MARKET_COMMODITIES) {
+      const entry = data[c.id] || {};
+      marketPrices[c.id] = {
+        price:     entry.price     || c.base,
+        prevPrice: entry.prevPrice || c.base,
+        history:   entry.history   || [c.base],
+        updatedAt: entry.updatedAt || Date.now(),
+      };
+    }
+    // Also read player inventory
+    get(ref(db, `players/${currentPlayer.id}/inventory`)).then(invSnap => {
+      marketInventory = invSnap.val() || {};
+      renderMarket();
+      startMarketTimer();
+    });
+  });
+}
+
+function startMarketTimer() {
+  if (marketTimerInterval) clearInterval(marketTimerInterval);
+  // Find earliest updatedAt
+  const times = Object.values(marketPrices).map(p => p.updatedAt || 0);
+  const earliest = Math.min(...times);
+  const nextUpdate = earliest + MARKET_UPDATE_INTERVAL;
+
+  const tick = () => {
+    const rem = nextUpdate - Date.now();
+    const el = document.getElementById('mkt-timer');
+    if (!el) return;
+    if (rem <= 0) {
+      el.textContent = 'Next update: soon…';
+      return;
+    }
+    const m = Math.floor(rem / 60000);
+    const s = Math.floor((rem % 60000) / 1000);
+    el.textContent = `Next update: ${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  };
+  tick();
+  marketTimerInterval = setInterval(tick, 1000);
+}
+
+function renderMarket() {
+  const wallet = currentPlayer.balance ?? 0;
+  document.getElementById('mkt-wallet').textContent = wallet.toLocaleString() + ' CR';
+
+  // Portfolio value
+  let portVal = 0;
+  for (const c of MARKET_COMMODITIES) {
+    const qty = marketInventory[c.id] || 0;
+    portVal += qty * (marketPrices[c.id]?.price || 0);
+  }
+  document.getElementById('mkt-portval').textContent = portVal.toLocaleString() + ' CR';
+
+  const table = document.getElementById('mkt-table');
+  table.innerHTML = MARKET_COMMODITIES.map(c => {
+    const p = marketPrices[c.id] || { price: c.base, prevPrice: c.base, history: [c.base] };
+    const pct = p.prevPrice ? ((p.price - p.prevPrice) / p.prevPrice * 100).toFixed(1) : '0.0';
+    const up = p.price >= p.prevPrice;
+    const qty = marketInventory[c.id] || 0;
+    const hist = (p.history || [p.price]).slice(-10);
+    const maxH = Math.max(...hist), minH = Math.min(...hist), range = maxH - minH || 1;
+    const bars = hist.map(v => {
+      const h = Math.max(2, Math.round(((v - minH) / range) * 20));
+      const col = v >= p.prevPrice ? 'var(--g)' : 'var(--r)';
+      return `<div class="spark-bar" style="height:${h}px;background:${col};"></div>`;
+    }).join('');
+    return `
+    <div class="market-row">
+      <div class="market-row-top">
+        <span class="market-name">${c.icon} ${c.name}</span>
+        <span>
+          <span class="market-price">${p.price.toLocaleString()} CR</span>
+          <span class="market-change ${up ? 'up' : 'down'}">${up ? '▲' : '▼'} ${Math.abs(pct)}%</span>
+        </span>
+      </div>
+      <div class="sparkline">${bars}</div>
+      <div class="market-row-bot" style="margin-top:8px;">
+        <span class="market-held">Held: <b>${qty}</b></span>
+        <input class="market-qty" type="number" min="1" value="1" id="qty-${c.id}" />
+        <button class="market-btn market-buy" onclick="marketBuy('${c.id}')">BUY</button>
+        <button class="market-btn market-sell" onclick="marketSell('${c.id}')" ${qty === 0 ? 'disabled style="opacity:.35;"' : ''}>SELL</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function marketBuy(commodityId) {
+  const c = MARKET_COMMODITIES.find(x => x.id === commodityId);
+  const qty = parseInt(document.getElementById('qty-' + commodityId)?.value) || 1;
+  const price = marketPrices[commodityId]?.price || c.base;
+  const total = price * qty;
+  const balance = currentPlayer.balance ?? 0;
+  if (balance < total) { showToast(`Not enough CR — need ${total.toLocaleString()} CR`, 'err'); return; }
+  try {
+    const newBal = balance - total;
+    const newQty = (marketInventory[commodityId] || 0) + qty;
+    await update(ref(db, `players/${currentPlayer.id}`), {
+      balance: newBal,
+      [`inventory/${commodityId}`]: newQty,
+    });
+    currentPlayer.balance = newBal;
+    marketInventory[commodityId] = newQty;
+    showToast(`Bought ${qty}× ${c.name} for ${total.toLocaleString()} CR`, 'ok');
+    renderMarket();
+  } catch(e) { showToast('Buy failed: ' + e.message, 'err'); }
+}
+window.marketBuy = marketBuy;
+
+async function marketSell(commodityId) {
+  const c = MARKET_COMMODITIES.find(x => x.id === commodityId);
+  const qty = parseInt(document.getElementById('qty-' + commodityId)?.value) || 1;
+  const held = marketInventory[commodityId] || 0;
+  if (held < qty) { showToast(`Only holding ${held} — can't sell ${qty}`, 'err'); return; }
+  const price = marketPrices[commodityId]?.price || c.base;
+  const total = price * qty;
+  try {
+    const newBal = (currentPlayer.balance ?? 0) + total;
+    const newQty = held - qty;
+    const updates = {
+      balance: newBal,
+      [`inventory/${commodityId}`]: newQty || null,
+    };
+    await update(ref(db, `players/${currentPlayer.id}`), updates);
+    currentPlayer.balance = newBal;
+    if (newQty === 0) delete marketInventory[commodityId];
+    else marketInventory[commodityId] = newQty;
+    showToast(`Sold ${qty}× ${c.name} for ${total.toLocaleString()} CR`, 'ok');
+    renderMarket();
+  } catch(e) { showToast('Sell failed: ' + e.message, 'err'); }
+}
+window.marketSell = marketSell;
 </script>
 </body>
 </html>
